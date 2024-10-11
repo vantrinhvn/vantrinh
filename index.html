@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Văn Trình đẹp trai nhất </title>
+    <title>Văn Trình đẹp trai nhất</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,8 +14,7 @@
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: hidden;
-            /* Ngăn cuộn màn hình */
+            overflow: hidden; /* Ngăn cuộn màn hình */
         }
 
         .container {
@@ -38,6 +37,7 @@
         .button-group {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Đảm bảo các nút có thể xếp xuống hàng nếu không đủ chỗ */
             gap: 15px;
         }
 
@@ -58,6 +58,18 @@
 
         .move {
             transition: transform 0.5s;
+        }
+
+        /* Media query cho thiết bị di động */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em; /* Kích thước chữ tiêu đề nhỏ hơn trên di động */
+            }
+
+            .button-group a {
+                padding: 10px 15px; /* Giảm padding cho nút trên di động */
+                font-size: 1em; /* Kích thước chữ nút nhỏ hơn trên di động */
+            }
         }
     </style>
 </head>
@@ -91,9 +103,9 @@
             const currentY = button.getBoundingClientRect().top;
 
             // Tính toán vị trí ngẫu nhiên không vượt quá 50px
-            const maxOffset = 200;
-            const randomX = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
-            const randomY = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
+            const maxOffset = 250;
+            const randomX = (Math.random() - 0.75) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
+            const randomY = (Math.random() - 0.75) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
 
             // Nếu nhấn lần đầu tiên
             if (button.dataset.clickCount === '1') {
@@ -105,30 +117,21 @@
                 // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
                 button.style.transform = `translate(${randomX}px, ${randomY}px)`;
                 button.classList.add('move');
-            }   
-             else if (button.dataset.clickCount === '3') {
-                // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
-                button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.classList.add('move');
-            }   else if (button.dataset.clickCount === '4') {
+            }
+            else if (button.dataset.clickCount === '3') {
                 // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
                 button.style.transform = `translate(${randomX}px, ${randomY}px)`;
                 button.classList.add('move');
             }
-            else if (button.dataset.clickCount === '5') {
+            else if (button.dataset.clickCount === '4') {
                 // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
                 button.style.transform = `translate(${randomX}px, ${randomY}px)`;
                 button.classList.add('move');
-            } else if (button.dataset.clickCount === '6') {
+            }  else if (button.dataset.clickCount === '5') {
                 // Quay lại vị trí ban đầu
                 button.style.transform = `translate(0, 0)`;
-
-                // Đợi cho nút quay về vị trí cũ
-                setTimeout(() => {
-                    button.style.transform = 'translate(0, 0)';
-                }, 500); // thời gian quay về vị trí cũ
-
-            } else if (button.dataset.clickCount === '7') {
+            }
+            else if (button.dataset.clickCount === '6') {
                 // Chuyển trang
                 window.location.href = targetPage;
             }
