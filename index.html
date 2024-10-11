@@ -103,9 +103,9 @@
             const currentY = button.getBoundingClientRect().top;
 
             // Tính toán vị trí ngẫu nhiên không vượt quá 50px
-            const maxOffset = 250;
-            const randomX = (Math.random() - 0.75) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
-            const randomY = (Math.random() - 0.75) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
+            const maxOffset = 150;
+            const randomX = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
+            const randomY = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
 
             // Nếu nhấn lần đầu tiên
             if (button.dataset.clickCount === '1') {
