@@ -8,141 +8,56 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            background: linear-gradient(135deg, #f06, #ffb3b3);
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
         }
 
-        .chat-container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 500px;
+        .container {
+            width: 400px;
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
-        h1 {
-            text-align: center;
-            color: #ff5733;
-            margin-bottom: 20px;
-            font-size: 2em;
-        }
-
-        .message-area {
-            height: 250px;
+        #chat {
+            height: 300px;
             overflow-y: auto;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .message-area div {
-            padding: 10px;
+            border: 1px solid #ccc;
             margin-bottom: 10px;
-            background-color: #ffebcd;
-            border-radius: 5px;
-        }
-
-        textarea {
-            width: calc(100% - 22px);
-            height: 60px;
             padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
             border-radius: 5px;
-            font-size: 1.1em;
         }
 
-        .send-btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #ff5733;
+        #messageInput {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f06;
             color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .send-btn:hover {
-            background-color: #e74c3c;
         }
     </style>
 </head>
 
 <body>
-
-    <div class="chat-container">
-        <h1>Nhắn Tin</h1>
-
-        <div class="message-area" id="messageArea">
-            <!-- Tin nhắn sẽ được hiện ra tại đây -->
-        </div>
-
-        <textarea id="messageInput" placeholder="Nhập tin nhắn..."></textarea>
-        <button class="send-btn" onclick="sendMessage()">Gửi</button>
+    <div class="container">
+        <h2>Nhắn Tin</h2>
+        <div id="chat"></div>
+        <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." />
     </div>
 
-    <script>
-        // Hàm để tải tin nhắn đã lưu từ LocalStorage khi trang được mở
-        window.onload = function () {
-            loadMessages();
-        };
-
-        // Hàm để gửi tin nhắn và lưu vào LocalStorage
-        function sendMessage() {
-            const messageInput = document.getElementById("messageInput");
-            const messageArea = document.getElementById("messageArea");
-
-            const message = messageInput.value.trim();
-
-            if (message) {
-                const newMessage = document.createElement("div");
-                newMessage.textContent = message;
-
-                messageArea.appendChild(newMessage);
-                messageInput.value = "";
-
-                // Lưu tin nhắn vào LocalStorage
-                saveMessage(message);
-
-                messageArea.scrollTop = messageArea.scrollHeight;
-            }
-        }
-
-        // Hàm lưu tin nhắn vào LocalStorage
-        function saveMessage(message) {
-            let messages = JSON.parse(localStorage.getItem('messages')) || [];
-            messages.push(message);
-            localStorage.setItem('messages', JSON.stringify(messages));
-        }
-
-        // Hàm tải tin nhắn từ LocalStorage và hiển thị ra trang
-        function loadMessages() {
-            const messages = JSON.parse(localStorage.getItem('messages')) || [];
-            const messageArea = document.getElementById("messageArea");
-
-            messages.forEach(function (message) {
-                const messageDiv = document.createElement("div");
-                messageDiv.textContent = message;
-                messageArea.appendChild(messageDiv);
-            });
-
-            // Tự động cuộn xuống cuối
-            messageArea.scrollTop = messageArea.scrollHeight;
-        }
-    </script>
-
+    <script src="nhantin.js"></script>
 </body>
 
 </html>
