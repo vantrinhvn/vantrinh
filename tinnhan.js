@@ -1,20 +1,32 @@
-const ws = new WebSocket('ws://' + window.location.host);
-const chatDiv = document.getElementById('chat');
-const messageInput = document.getElementById('messageInput');
+const socket = io();
 
-// Nhận tin nhắn từ server và hiển thị trong chat
-ws.onmessage = (event) => {
-    const message = document.createElement('div');
-    message.textContent = event.data;
-    message.className = 'message';
-    chatDiv.appendChild(message);
-    chatDiv.scrollTop = chatDiv.scrollHeight; // Cuộn xuống dưới cùng
-};
+// Lấy các phần tử cần thiết
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+const messagesContainer = document.getElementById('messages');
 
-// Gửi tin nhắn khi nhấn phím Enter
-messageInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter' && messageInput.value.trim() !== '') {
-        ws.send(messageInput.value);
-        messageInput.value = '';
+// Hiển thị tin nhắn khi nhận được
+socket.on('chat message', (msg) => {
+    const item = document.createElement('li');
+    item.textContent = msg;
+    messagesContainer.appendChild(item);
+    window.scrollTo(0, document.body.scrollHeight);
+});
+
+// Lấy lịch sử tin nhắn
+socket.on('chat history', (messages) => {
+    messages.forEach(msg => {
+        const item = document.createElement('li');
+        item.textContent = msg;
+        messagesContainer.appendChild(item);
+    });
+});
+
+// Gửi tin nhắn khi gửi form
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
     }
 });
