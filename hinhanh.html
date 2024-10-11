@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hình ảnh di chuyển qua lại</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #342d2d;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container {
+            position: relative;
+            background-color: #342d2d;
+            overflow: hidden;
+            border-radius: 15px; /* Giữ nguyên border-radius */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transition: box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển đổi cho viền */
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: flex;
+        }
+
+        .image-wrapper img {
+            display: none;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 15px; /* Giữ nguyên border-radius */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
+            user-drag: none; /* Ngăn chặn kéo ảnh */
+            -webkit-user-drag: none; /* Ngăn chặn kéo ảnh trên trình duyệt WebKit */
+        }
+
+        .image-wrapper img.active {
+            display: block;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5em;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            user-select: none;
+        }
+
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+
+        /* Dropdown để thay đổi kích thước ảnh */
+        .size-select {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #11ff00;
+            color: rgb(21, 0, 255);
+            border: none;
+            padding: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="image-container" id="imageContainer">
+        <div class="image-wrapper" id="imageWrapper">
+            <img src="1.jpg" alt="Image 1" class="active" oncontextmenu="return false" draggable="false">
+            <img src="2.jpg" alt="Image 2" oncontextmenu="return false" draggable="false">
+            <img src="3.jpg" alt="Image 3" oncontextmenu="return false" draggable="false">
+            <img src="4.jpg" alt="Image 4" oncontextmenu="return false" draggable="false">
+            <img src="5.jpg" alt="Image 5" oncontextmenu="return false" draggable="false">
+            <img src="6.jpg" alt="Image 6" oncontextmenu="return false" draggable="false">
+            <img src="7.jpg" alt="Image 7" oncontextmenu="return false" draggable="false">
+            <img src="8.jpg" alt="Image 8" oncontextmenu="return false" draggable="false">
+            <img src="9.jpg" alt="Image 9" oncontextmenu="return false" draggable="false">
+            <img src="10.jpg" alt="Image 10" oncontextmenu="return false" draggable="false">
+            <img src="11.jpg" alt="Image 11" oncontextmenu="return false" draggable="false">
+            <img src="12.jpg" alt="Image 12" oncontextmenu="return false" draggable="false">
+            <img src="13.jpg" alt="Image 13" oncontextmenu="return false" draggable="false">
+            <img src="14.jpg" alt="Image 14" oncontextmenu="return false" draggable="false">
+            <img src="15.jpg" alt="Image 15" oncontextmenu="return false" draggable="false">
+            <img src="16.jpg" alt="Image 16" oncontextmenu="return false" draggable="false">
+            <img src="17.jpg" alt="Image 17" oncontextmenu="return false" draggable="false">
+            <img src="18.jpg" alt="Image 18" oncontextmenu="return false" draggable="false">
+            <img src="19.jpg" alt="Image 19" oncontextmenu="return false" draggable="false">
+            <img src="20.jpg" alt="Image 20" oncontextmenu="return false" draggable="false">
+            <img src="21.jpg" alt="Image 21" oncontextmenu="return false" draggable="false">
+            <img src="22.jpg" alt="Image 22" oncontextmenu="return false" draggable="false">
+            <img src="23.jpg" alt="Image 23" oncontextmenu="return false" draggable="false">
+            <img src="24.jpg" alt="Image 24" oncontextmenu="return false" draggable="false">
+            <img src="25.jpg" alt="Image 25" oncontextmenu="return false" draggable="false">
+            <img src="26.jpg" alt="Image 26" oncontextmenu="return false" draggable="false">
+            <img src="27.jpg" alt="Image 27" oncontextmenu="return false" draggable="false">
+            <img src="28.jpg" alt="Image 28" oncontextmenu="return false" draggable="false">
+            <img src="29.jpg" alt="Image 29" oncontextmenu="return false" draggable="false">
+            <img src="30.jpg" alt="Image 30" oncontextmenu="return false" draggable="false">
+            <img src="31.jpg" alt="Image 31" oncontextmenu="return false" draggable="false">
+            <img src="32.jpg" alt="Image 32" oncontextmenu="return false" draggable="false">
+            <img src="33.jpg" alt="Image 33" oncontextmenu="return false" draggable="false">
+            <img src="34.jpg" alt="Image 34" oncontextmenu="return false" draggable="false">
+            <img src="35.jpg" alt="Image 35" oncontextmenu="return false" draggable="false">
+            <img src="36.jpg" alt="Image 36" oncontextmenu="return false" draggable="false">
+            <img src="37.jpg" alt="Image 37" oncontextmenu="return false" draggable="false">
+            <img src="38.jpg" alt="Image 38" oncontextmenu="return false" draggable="false">
+            <img src="39.jpg" alt="Image 39" oncontextmenu="return false" draggable="false">
+            <img src="40.jpg" alt="Image 40" oncontextmenu="return false" draggable="false">
+            <img src="41.jpg" alt="Image 41" oncontextmenu="return false" draggable="false">
+            <img src="42.jpg" alt="Image 42" oncontextmenu="return false" draggable="false">
+            <img src="43.jpg" alt="Image 43" oncontextmenu="return false" draggable="false">
+            <img src="44.jpg" alt="Image 44" oncontextmenu="return false" draggable="false">
+            <img src="45.jpg" alt="Image 45" oncontextmenu="return false" draggable="false">
+            <img src="46.jpg" alt="Image 46" oncontextmenu="return false" draggable="false">
+            <img src="47.jpg" alt="Image 47" oncontextmenu="return false" draggable="false">
+            <img src="48.jpg" alt="Image 48" oncontextmenu="return false" draggable="false">
+            <img src="49.jpg" alt="Image 49" oncontextmenu="return false" draggable="false">
+            <img src="50.jpg" alt="Image 50" oncontextmenu="return false" draggable="false">
+            <img src="51.jpg" alt="Image 51" oncontextmenu="return false" draggable="false">
+            <img src="52.jpg" alt="Image 52" oncontextmenu="return false" draggable="false">
+            <img src="53.jpg" alt="Image 53" oncontextmenu="return false" draggable="false">
+            <img src="54.jpg" alt="Image 54" oncontextmenu="return false" draggable="false">
+            <img src="55.jpg" alt="Image 55" oncontextmenu="return false" draggable="false">
+            <img src="56.jpg" alt="Image 56" oncontextmenu="return false" draggable="false">
+            <img src="57.jpg" alt="Image 57" oncontextmenu="return false" draggable="false">
+            <img src="58.jpg" alt="Image 58" oncontextmenu="return false" draggable="false">
+            <img src="59.jpg" alt="Image 59" oncontextmenu="return false" draggable="false">
+            <img src="60.jpg" alt="Image 60" oncontextmenu="return false" draggable="false">
+            <img src="61.jpg" alt="Image 61" oncontextmenu="return false" draggable="false">
+            <img src="62.jpg" alt="Image 62" oncontextmenu="return false" draggable="false">
+            <img src="63.jpg" alt="Image 63" oncontextmenu="return false" draggable="false">
+            <img src="64.jpg" alt="Image 64" oncontextmenu="return false" draggable="false">
+            <img src="65.jpg" alt="Image 65" oncontextmenu="return false" draggable="false">
+            <img src="66.jpg" alt="Image 66" oncontextmenu="return false" draggable="false">
+            <img src="67.jpg" alt="Image 67" oncontextmenu="return false" draggable="false">
+            <img src="68.jpg" alt="Image 68" oncontextmenu="return false" draggable="false">
+        </div>
+        <div class="arrow arrow-left" onclick="prevImage()">&#10094;</div>
+        <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
+    </div>
+
+    <select class="size-select" id="sizeSelect" onchange="changeImageSize()">
+        <option value="100">100%</option>
+        <option value="75">75%</option>
+        <option value="50">50%</option>
+        <option value="25">25%</option>
+        <option value="10">10%</option>
+    </select>
+
+    <script>
+        let currentIndex = 0; // Biến để lưu chỉ số hình ảnh hiện tại
+        const images = document.querySelectorAll('.image-wrapper img'); // Lấy tất cả các thẻ img
+        const totalImages = images.length; // Lấy tổng số hình ảnh
+        const imageContainer = document.getElementById('imageContainer'); // Lấy thẻ chứa hình ảnh
+
+        // Cập nhật kích thước của container hình ảnh
+        function updateContainerSize() {
+            const currentImage = images[currentIndex]; // Lấy hình ảnh hiện tại
+            const imgWidth = currentImage.naturalWidth; // Lấy chiều rộng tự nhiên của hình ảnh
+            const imgHeight = currentImage.naturalHeight; // Lấy chiều cao tự nhiên của hình ảnh
+            imageContainer.style.width = imgWidth + 'px'; // Cập nhật chiều rộng của container
+            imageContainer.style.height = imgHeight + 'px'; // Cập nhật chiều cao của container
+        }
+
+        // Hiển thị hình ảnh theo chỉ số
+        function showImage(index) {
+            images.forEach(img => img.classList.remove('active')); // Ẩn tất cả hình ảnh
+            images[index].classList.add('active'); // Hiển thị hình ảnh hiện tại
+            updateContainerSize(); // Cập nhật kích thước container
+        }
+
+        // Hiển thị hình ảnh tiếp theo
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % totalImages; // Tăng chỉ số, nếu lớn hơn tổng số hình ảnh thì quay lại đầu
+            showImage(currentIndex); // Gọi hàm hiển thị hình ảnh
+        }
+
+        // Hiển thị hình ảnh trước
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + totalImages) % totalImages; // Giảm chỉ số, nếu nhỏ hơn 0 thì quay lại cuối
+            showImage(currentIndex); // Gọi hàm hiển thị hình ảnh
+        }
+
+        // Thay đổi kích thước hình ảnh
+        function changeImageSize() {
+            const sizeSelect = document.getElementById('sizeSelect').value; // Lấy giá trị từ dropdown
+            const scale = sizeSelect / 100; // Tính tỷ lệ
+
+            images.forEach(img => {
+                img.style.transform = `scale(${scale})`; // Thay đổi kích thước hình ảnh
+                img.style.boxShadow = `0 8px 16px rgba(255, 255, 255, ${scale})`; // Thay đổi bóng cho hình ảnh
+            });
+
+            updateContainerSize(); // Cập nhật kích thước container
+        }
+
+        // Gọi hàm để cập nhật kích thước container khi tải trang
+        window.onload = updateContainerSize;
+
+        // Ngăn chặn menu chuột phải
+        document.addEventListener('contextmenu', function (event) {
+            event.preventDefault();
+        });
+    </script>
+</body>
+
+</html>

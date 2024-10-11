@@ -14,38 +14,40 @@
             justify-content: center;
             align-items: center;
             margin: 0;
-            overflow: hidden; /* Ngăn cuộn màn hình */
+            overflow: hidden;
             flex-direction: column;
+            padding: 10px;
         }
 
         .container {
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            position: relative;
+            max-width: 100%;
         }
 
         h1 {
             color: #f06;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            font-size: 3em;
+            margin-bottom: 15px;
+            font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .button-group {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap; /* Đảm bảo các nút có thể xếp xuống hàng nếu không đủ chỗ */
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .button-group a {
             display: inline-block;
-            padding: 15px 25px;
-            font-size: 1.2em;
+            padding: 10px 20px;
+            font-size: 1.1em;
             color: white;
             background-color: #f06;
             border-radius: 8px;
@@ -53,50 +55,139 @@
             text-transform: uppercase;
             font-weight: bold;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
             transition: transform 0.5s, box-shadow 0.2s;
         }
 
-        .move {
-            transition: transform 0.5s;
+        .button-group a:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.2);
         }
 
-        /* Nút Nhắn tin */
-        .message-button {
+        .rainbow-group {
+            margin-top: 15px;
+        }
+
+        .rainbow-group a {
             display: inline-block;
-            padding: 15px 30px;
-            background-color: #ff5733;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            color: white;
+            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 200%;
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: rainbow 3s ease infinite;
+            transition: transform 0.5s, box-shadow 0.2s;
+        }
+
+        @keyframes rainbow {
+            0% {
+                background-position: 0%;
+            }
+            100% {
+                background-position: 100%;
+            }
+        }
+
+        /* Định dạng form đăng nhập */
+        #login-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+            z-index: 1000;
+            text-align: left;
+        }
+
+        #login-form h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        #login-form input {
+            display: block;
+            width: 91%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #login-form button {
+            padding: 12px 20px;
+            background-color: #f06;
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.3em;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
             font-weight: bold;
             text-transform: uppercase;
-            cursor: pointer;
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            margin-top: 20px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .message-button:hover {
-            background-color: #e74c3c;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        #login-form button:hover {
+            background-color: #e00566;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        /* Media query cho thiết bị di động */
+        #error-message {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Mờ nền khi form đăng nhập hiện */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Điều chỉnh cho thiết bị di động */
         @media (max-width: 768px) {
             h1 {
-                font-size: 2em; /* Kích thước chữ tiêu đề nhỏ hơn trên di động */
+                font-size: 2em;
             }
 
-            .button-group a {
-                padding: 10px 15px; /* Giảm padding cho nút trên di động */
-                font-size: 1em; /* Kích thước chữ nút nhỏ hơn trên di động */
+            .button-group a,
+            .rainbow-group a {
+                padding: 8px 15px;
+                font-size: 1em;
             }
 
-            .message-button {
-                font-size: 1.1em; /* Giảm kích thước chữ của nút Nhắn tin trên di động */
-                padding: 12px 25px;
+            #login-form h2 {
+                font-size: 1.6em;
+            }
+
+            #login-form input {
+                padding: 10px;
+            }
+
+            #login-form button {
+                font-size: 1em;
+                padding: 10px;
             }
         }
     </style>
@@ -111,58 +202,75 @@
             <a href="#" onclick="moveButton(this, 'index4.html')">Tình yêu 3</a>
             <a href="#" onclick="moveButton(this, 'index5.html')">Tình yêu 4</a>
         </div>
+        <div class="rainbow-group">
+            <a href="#" onclick="showLoginForm()">Xem hình ảnh</a>
+        </div>
+    </div>
+
+    <!-- Nền mờ khi mở form đăng nhập -->
+    <div id="overlay"></div>
+
+    <!-- Form đăng nhập -->
+    <div id="login-form">
+        <h2>Đăng nhập</h2>
+        <div id="error-message">Tài khoản hoặc mật khẩu không đúng!</div>
+        <input type="text" id="username" placeholder="Tài khoản">
+        <input type="password" id="password" placeholder="Mật khẩu">
+        <button onclick="login()">Đăng nhập</button>
     </div>
 
     <script>
+        const validAccounts = {
+            "trinh": "2004",
+            "ly": "2008",
+            "hanh": "2009",
+            "huan": "2006",
+            "su": "2008"
+        };
+
+        function showLoginForm() {
+            document.getElementById("login-form").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function hideLoginForm() {
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (validAccounts[username] && validAccounts[username] === password) {
+                window.location.href = "hinhanh.html";
+            } else {
+                document.getElementById("error-message").style.display = "block";
+            }
+        }
+
         function moveButton(button, targetPage) {
-            // Khởi tạo biến clickCount nếu chưa có
             if (!button.dataset.clickCount) {
-                button.dataset.clickCount = 0; // khởi tạo nếu chưa có
+                button.dataset.clickCount = 0;
             }
 
             button.dataset.clickCount++;
 
-            // Kích thước của nút
-            const buttonWidth = button.offsetWidth;
-            const buttonHeight = button.offsetHeight;
-
-            // Vị trí hiện tại của nút
-            const currentX = button.getBoundingClientRect().left;
-            const currentY = button.getBoundingClientRect().top;
-
-            // Tính toán vị trí ngẫu nhiên không vượt quá 50px
             const maxOffset = 150;
-            const randomX = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
-            const randomY = (Math.random() - 0.5) * maxOffset * 2; // Giá trị ngẫu nhiên trong khoảng -50 đến 50
+            const randomX = (Math.random() - 0.5) * maxOffset * 2;
+            const randomY = (Math.random() - 0.5) * maxOffset * 2;
 
-            // Nếu nhấn lần đầu tiên
-            if (button.dataset.clickCount === '1') {
-                // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
+            if (button.dataset.clickCount <= 5) {
                 button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.classList.add('move');
+                button.style.transition = "transform 0.5s";
             }
-            else if (button.dataset.clickCount === '2') {
-                // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
-                button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.classList.add('move');
-            }
-            else if (button.dataset.clickCount === '3') {
-                // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
-                button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.classList.add('move');
-            }
-            else if (button.dataset.clickCount === '4') {
-                // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
-                button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.classList.add('move');
-            } else if (button.dataset.clickCount === '5') {
-                // Quay lại vị trí ban đầu
-                button.style.transform = `translate(0, 0)`;
-            } else if (button.dataset.clickCount === '6') {
-                // Chuyển trang
+
+            if (button.dataset.clickCount == 6) {
                 window.location.href = targetPage;
             }
         }
+
+        document.getElementById("overlay").onclick = hideLoginForm;
     </script>
 </body>
 
