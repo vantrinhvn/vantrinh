@@ -15,6 +15,7 @@
             align-items: center;
             margin: 0;
             overflow: hidden; /* Ngăn cuộn màn hình */
+            flex-direction: column;
         }
 
         .container {
@@ -60,6 +61,28 @@
             transition: transform 0.5s;
         }
 
+        /* Nút Nhắn tin */
+        .message-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #ff5733;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .message-button:hover {
+            background-color: #e74c3c;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
         /* Media query cho thiết bị di động */
         @media (max-width: 768px) {
             h1 {
@@ -69,6 +92,11 @@
             .button-group a {
                 padding: 10px 15px; /* Giảm padding cho nút trên di động */
                 font-size: 1em; /* Kích thước chữ nút nhỏ hơn trên di động */
+            }
+
+            .message-button {
+                font-size: 1.1em; /* Giảm kích thước chữ của nút Nhắn tin trên di động */
+                padding: 12px 25px;
             }
         }
     </style>
@@ -83,6 +111,9 @@
             <a href="#" onclick="moveButton(this, 'index4.html')">Tình yêu 3</a>
             <a href="#" onclick="moveButton(this, 'index5.html')">Tình yêu 4</a>
         </div>
+
+        <!-- Nút Nhắn tin nằm dưới thẻ div.container -->
+        <button class="message-button" onclick="window.location.href='nhantin.html'">Nhắn tin</button>
     </div>
 
     <script>
@@ -127,11 +158,10 @@
                 // Di chuyển nút đến vị trí ngẫu nhiên trong giới hạn
                 button.style.transform = `translate(${randomX}px, ${randomY}px)`;
                 button.classList.add('move');
-            }  else if (button.dataset.clickCount === '5') {
+            } else if (button.dataset.clickCount === '5') {
                 // Quay lại vị trí ban đầu
                 button.style.transform = `translate(0, 0)`;
-            }
-            else if (button.dataset.clickCount === '6') {
+            } else if (button.dataset.clickCount === '6') {
                 // Chuyển trang
                 window.location.href = targetPage;
             }
