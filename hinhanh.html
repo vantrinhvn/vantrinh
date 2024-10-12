@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hình ảnh di chuyển qua lại</title>
     <style>
+        /* Your CSS code remains the same */
         body {
             font-family: Arial, sans-serif;
             background-color: #342d2d;
@@ -22,12 +23,11 @@
             position: relative;
             background-color: #342d2d;
             overflow: hidden;
-            border-radius: 15px; /* Giữ nguyên border-radius */
+            border-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-
-            transition: box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển đổi cho viền */
+            transition: box-shadow 0.3s ease;
         }
 
         .image-wrapper {
@@ -41,10 +41,10 @@
             height: auto;
             max-width: 100%;
             max-height: 100%;
-            border-radius: 15px; /* Giữ nguyên border-radius */
-            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Thêm hiệu ứng chuyển đổi */
-            user-drag: none; /* Ngăn chặn kéo ảnh */
-            -webkit-user-drag: none; /* Ngăn chặn kéo ảnh trên trình duyệt WebKit */
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            user-drag: none;
+            -webkit-user-drag: none;
         }
 
         .image-wrapper img.active {
@@ -72,7 +72,6 @@
             right: 10px;
         }
 
-        /* Dropdown để thay đổi kích thước ảnh */
         .size-select {
             position: absolute;
             top: 10px;
@@ -159,6 +158,7 @@
             <img src="66.jpg" alt="Image 66" oncontextmenu="return false" draggable="false">
             <img src="67.jpg" alt="Image 67" oncontextmenu="return false" draggable="false">
             <img src="68.jpg" alt="Image 68" oncontextmenu="return false" draggable="false">
+            <!-- Add more images here -->
         </div>
         <div class="arrow arrow-left" onclick="prevImage()">&#10094;</div>
         <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
@@ -173,56 +173,54 @@
     </select>
 
     <script>
-        let currentIndex = 0; // Biến để lưu chỉ số hình ảnh hiện tại
-        const images = document.querySelectorAll('.image-wrapper img'); // Lấy tất cả các thẻ img
-        const totalImages = images.length; // Lấy tổng số hình ảnh
-        const imageContainer = document.getElementById('imageContainer'); // Lấy thẻ chứa hình ảnh
+        let currentIndex = 0;
+        const images = document.querySelectorAll('.image-wrapper img');
+        const totalImages = images.length;
+        const imageContainer = document.getElementById('imageContainer');
 
-        // Cập nhật kích thước của container hình ảnh
+        // Thêm đối tượng âm thanh
+        const sound = new Audio('nhac.mp3'); // Đường dẫn đến file nhạc
+
         function updateContainerSize() {
-            const currentImage = images[currentIndex]; // Lấy hình ảnh hiện tại
-            const imgWidth = currentImage.naturalWidth; // Lấy chiều rộng tự nhiên của hình ảnh
-            const imgHeight = currentImage.naturalHeight; // Lấy chiều cao tự nhiên của hình ảnh
-            imageContainer.style.width = imgWidth + 'px'; // Cập nhật chiều rộng của container
-            imageContainer.style.height = imgHeight + 'px'; // Cập nhật chiều cao của container
+            const currentImage = images[currentIndex];
+            const imgWidth = currentImage.naturalWidth;
+            const imgHeight = currentImage.naturalHeight;
+            imageContainer.style.width = imgWidth + 'px';
+            imageContainer.style.height = imgHeight + 'px';
         }
 
-        // Hiển thị hình ảnh theo chỉ số
         function showImage(index) {
-            images.forEach(img => img.classList.remove('active')); // Ẩn tất cả hình ảnh
-            images[index].classList.add('active'); // Hiển thị hình ảnh hiện tại
-            updateContainerSize(); // Cập nhật kích thước container
+            images.forEach(img => img.classList.remove('active'));
+            images[index].classList.add('active');
+            updateContainerSize();
         }
 
-        // Hiển thị hình ảnh tiếp theo
         function nextImage() {
-            currentIndex = (currentIndex + 1) % totalImages; // Tăng chỉ số, nếu lớn hơn tổng số hình ảnh thì quay lại đầu
-            showImage(currentIndex); // Gọi hàm hiển thị hình ảnh
+            currentIndex = (currentIndex + 1) % totalImages;
+            showImage(currentIndex);
+            sound.play(); // Phát nhạc khi chuyển ảnh
         }
 
-        // Hiển thị hình ảnh trước
         function prevImage() {
-            currentIndex = (currentIndex - 1 + totalImages) % totalImages; // Giảm chỉ số, nếu nhỏ hơn 0 thì quay lại cuối
-            showImage(currentIndex); // Gọi hàm hiển thị hình ảnh
+            currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+            showImage(currentIndex);
+            sound.play(); // Phát nhạc khi chuyển ảnh
         }
 
-        // Thay đổi kích thước hình ảnh
         function changeImageSize() {
-            const sizeSelect = document.getElementById('sizeSelect').value; // Lấy giá trị từ dropdown
-            const scale = sizeSelect / 100; // Tính tỷ lệ
+            const sizeSelect = document.getElementById('sizeSelect').value;
+            const scale = sizeSelect / 100;
 
             images.forEach(img => {
-                img.style.transform = `scale(${scale})`; // Thay đổi kích thước hình ảnh
-                img.style.boxShadow = `0 8px 16px rgba(255, 255, 255, ${scale})`; // Thay đổi bóng cho hình ảnh
+                img.style.transform = `scale(${scale})`;
+                img.style.boxShadow = `0 8px 16px rgba(255, 255, 255, ${scale})`;
             });
 
-            updateContainerSize(); // Cập nhật kích thước container
+            updateContainerSize();
         }
 
-        // Gọi hàm để cập nhật kích thước container khi tải trang
         window.onload = updateContainerSize;
 
-        // Ngăn chặn menu chuột phải
         document.addEventListener('contextmenu', function (event) {
             event.preventDefault();
         });
