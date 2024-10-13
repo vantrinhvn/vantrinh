@@ -26,6 +26,16 @@
             border-radius: 15px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             max-width: 100%;
+            perspective: 1000px; /* Perspective for 3D effect */
+        }
+
+        .flip-container {
+            transition: transform 0.6s; /* Smooth transition */
+            transform-style: preserve-3d; /* Preserve 3D effect */
+        }
+
+        .flipped {
+            transform: rotateY(180deg); /* Flip effect */
         }
 
         h1 {
@@ -60,6 +70,53 @@
 
         .button-group a:hover {
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Style for the game button */
+        .game-button {
+            margin-top: 20px; /* Spacing above the button */
+            display: flex;
+            justify-content: center;
+        }
+
+        .game-button a {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            color: white;
+            background-color: transparent; /* Transparent background */
+            border: 3px solid transparent; /* Initial transparent border */
+            border-radius: 8px;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease; /* Smooth transitions */
+            position: relative; /* To position the pseudo-element */
+        }
+
+        .game-button a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); /* Rainbow border */
+            z-index: -1;
+            border-radius: 8px;
+            filter: blur(8px); /* Blur for glowing effect */
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.4s ease; /* Transition for the border */
+        }
+
+        .game-button a:hover::before {
+            opacity: 1; /* Show border on hover */
+        }
+
+        .game-button a:hover {
+            color: rgb(158, 158, 0); /* Change text color on hover */
+            border: 3px solid rgb(158, 158, 0); /* Border color on hover */
+            box-shadow: 0 0 20px rgb(158, 158, 0), 0 0 30px rgb(158, 158, 0); /* Glowing effect */
         }
 
         .rainbow-group {
@@ -194,29 +251,35 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Trái tim Văn Trình</h1>
-        <div class="button-group">
-            <a href="#" onclick="moveButton(this, 'index2.html')">Tình yêu 1</a>
-            <a href="#" onclick="moveButton(this, 'index3.html')">Tình yêu 2</a>
-            <a href="#" onclick="moveButton(this, 'index4.html')">Tình yêu 3</a>
-            <a href="#" onclick="moveButton(this, 'index5.html')">Tình yêu 4</a>
-        </div>
-        <div class="rainbow-group">
-            <a href="#" onclick="showLoginForm()">Xem hình ảnh</a>
+    <div class="flip-container" id="flip-container">
+        <div class="container">
+            <h1>Văn Trình học bài</h1>
+            <div class="button-group">
+                <a href="#" onclick="moveButton(this, 'index2.html')">Bài yêu 1</a>
+                <a href="#" onclick="moveButton(this, 'index3.html')">Bài yêu 2</a>
+                <a href="#" onclick="moveButton(this, 'index4.html')">Bài yêu 3</a>
+                <a href="#" onclick="moveButton(this, 'index5.html')">Bài yêu 4</a>
+            </div>
+            <div class="rainbow-group">
+                <a href="#" onclick="showLoginForm()">Xem hình ảnh</a>
+            </div>
+            <div class="game-button">
+                <a href="#" onclick="flipAndNavigate()">Trò chơi toán học</a>
+            </div>
         </div>
     </div>
 
-    <!-- Nền mờ khi mở form đăng nhập -->
+    <!-- Overlay for login form -->
     <div id="overlay"></div>
 
-    <!-- Form đăng nhập -->
+    <!-- Login form -->
     <div id="login-form">
         <h2>Đăng nhập</h2>
         <div id="error-message">Tài khoản hoặc mật khẩu không đúng!</div>
-        <input type="text" id="username" placeholder="Tài khoản">
-        <input type="password" id="password" placeholder="Mật khẩu">
+        <input type="text" id="username" placeholder="Tên đăng nhập" required />
+        <input type="password" id="password" placeholder="Mật khẩu" required />
         <button onclick="login()">Đăng nhập</button>
+        <button onclick="hideLoginForm()" style="margin-top: 10px;">Đóng</button>
     </div>
 
     <script>
@@ -225,8 +288,7 @@
             "ly": "2008",
             "hanh": "2009",
             "huan": "2006",
-            "su": "2008",
-            "vy": "2010"
+            "su": "2008"
         };
 
         function showLoginForm() {
@@ -269,6 +331,15 @@
             if (button.dataset.clickCount == 6) {
                 window.location.href = targetPage;
             }
+        }
+
+        function flipAndNavigate() {
+            const flipContainer = document.getElementById("flip-container");
+            flipContainer.classList.add("flipped"); // Add flipped class for animation
+
+            setTimeout(() => {
+                window.location.href = "trangtinh.html"; // Navigate after the animation completes
+            }, 600); // Match the timeout with the CSS transition duration
         }
 
         document.getElementById("overlay").onclick = hideLoginForm;
