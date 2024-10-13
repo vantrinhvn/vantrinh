@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
             height: 100vh;
             margin: 0;
         }
+
         .container {
             background: #ffffff;
             border-radius: 15px;
@@ -23,95 +25,139 @@
             max-width: 400px;
             width: 100%;
         }
-        h1 { 
-            font-size: 24px; 
-            margin-bottom: 20px; 
-            color: #333; 
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
         }
-        select, .answer-input, .btn {
+
+        select,
+        .answer-input,
+        .btn {
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            margin: 10px 0; /* Increased margin for better spacing */
-            width: calc(100% - 22px); /* Full width minus padding and border */
-            box-sizing: border-box; /* Include padding and border in width calculation */
-            transition: border-color 0.3s; /* Smooth transition for border color */
+            margin: 10px 0;
+            width: calc(100% - 22px);
+            box-sizing: border-box;
+            transition: border-color 0.3s;
         }
-        select:focus, .answer-input:focus {
-            border-color: #007bff; /* Change border color on focus */
-            outline: none; /* Remove default outline */
+
+        select:focus,
+        .answer-input:focus {
+            border-color: #007bff;
+            outline: none;
         }
-        .btn { 
-            background-color: #007bff; 
-            color: #fff; 
-            border: none; 
-            cursor: pointer; 
-            transition: background-color 0.3s; 
+
+        .btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .btn:hover { 
-            background-color: #0056b3; 
+
+        .btn:hover {
+            background-color: #0056b3;
         }
-        .timer { 
-            font-size: 22px; 
-            color: #FFD700; 
-            margin-bottom: 10px; 
-            display: none; 
+
+        .timer {
+            font-size: 22px;
+            color: #FFD700;
+            margin-bottom: 10px;
+            display: none;
         }
-        .score { 
-            font-size: 20px; 
-            color: #ff0000; 
-            margin-bottom: 10px; 
-            display: none; 
+
+        .score {
+            font-size: 20px;
+            color: #ff0000;
+            margin-bottom: 10px;
+            display: none;
         }
-        .high-score { 
-            font-size: 20px; 
-            color: #28a745; 
-            margin-bottom: 10px; 
+
+        .high-score {
+            font-size: 20px;
+            color: #28a745;
+            margin-bottom: 10px;
         }
-        .question { 
-            font-size: 20px; 
-            color: #444; 
-            margin: 20px 0; 
-            font-weight: 500; 
+
+        .question {
+            font-size: 20px;
+            color: #444;
+            margin: 20px 0;
+            font-weight: 500;
         }
-        .feedback { 
-            margin-top: 15px; 
-            font-size: 18px; 
-            color: #ff0000; 
-            font-weight: bold; 
-            opacity: 0; 
-            transition: opacity 0.3s; 
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .correct { 
-            color: #28a745; 
-            opacity: 1; 
+
+        .correct {
+            color: #28a745;
+            opacity: 1;
         }
-        .incorrect { 
-            color: #ff0000; 
-            opacity: 1; 
+
+        .incorrect {
+            color: #ff0000;
+            opacity: 1;
         }
-        .hidden { 
-            display: none; 
+
+        .hidden {
+            display: none;
         }
+
         .rainbow {
-            font-size: 22px; /* Increased font size for countdown */
+            font-size: 22px;
             font-weight: bold;
             animation: rainbow 1s linear infinite;
         }
+
         @keyframes rainbow {
-            0% { color: red; }
-            14% { color: orange; }
-            28% { color: yellow; }
-            42% { color: green; }
-            57% { color: blue; }
-            71% { color: indigo; }
-            85% { color: violet; }
-            100% { color: red; }
+            0% {
+                color: red;
+            }
+
+            14% {
+                color: orange;
+            }
+
+            28% {
+                color: yellow;
+            }
+
+            42% {
+                color: green;
+            }
+
+            57% {
+                color: blue;
+            }
+
+            71% {
+                color: indigo;
+            }
+
+            85% {
+                color: violet;
+            }
+
+            100% {
+                color: red;
+            }
         }
-        .reload-message { margin-top: 10px; }
+
+        .reload-message {
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container" id="game-container">
         <h1 id="game-title">Chọn Chế Độ</h1>
@@ -130,16 +176,16 @@
             <option value="/">Chia (/)</option>
         </select>
         <button class="btn" id="start-button" onclick="startGame()">Bắt đầu</button>
-        
+
         <div class="timer" id="timer">Thời gian: 30s</div>
-        <div class="score" id="score">Điểm: 0</div> 
+        <div class="score" id="score">Điểm: 0</div>
         <div class="high-score" id="high-score">Điểm cao nhất: 0</div>
         <div class="question" id="question"></div>
-        
+
         <input type="number" id="answer-input" class="answer-input hidden" placeholder="Nhập đáp án">
         <button class="btn hidden" id="submit-button" onclick="submitAnswer()">Trả lời</button>
         <button class="btn hidden" id="give-up-button" onclick="giveUp()">Bỏ cuộc</button>
-        
+
         <div class="feedback" id="feedback"></div>
         <div id="reload-message" class="hidden"></div>
     </div>
@@ -150,14 +196,15 @@
         let currentOperation = '+';
         let currentAnswer = 0;
         let difficulty = 'easy';
-        let score = 0; // Initialize score
+        let score = 0;
         let highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
 
         document.getElementById('high-score').textContent = `Điểm cao nhất: ${highScore}`;
 
         function startGame() {
-            score = 0; // Reset score to 0 when the game starts
+            score = 0;
             document.getElementById('score').textContent = `Điểm: ${score}`;
+            document.getElementById('score').style.display = 'block';
 
             document.getElementById('game-title').classList.add('hidden');
             document.getElementById('operation-title').classList.add('hidden');
@@ -169,44 +216,49 @@
             document.getElementById('answer-input').classList.remove('hidden');
             document.getElementById('submit-button').classList.remove('hidden');
 
-            difficulty = document.getElementById('difficulty-select').value; 
+            difficulty = document.getElementById('difficulty-select').value;
             currentOperation = document.getElementById('operation-select').value;
 
-            document.getElementById('score').style.display = 'block';
             document.getElementById('high-score').style.display = 'none';
-
-            document.getElementById('feedback').textContent = ''; 
+            document.getElementById('feedback').textContent = '';
             document.getElementById('feedback').classList.remove('correct', 'incorrect');
 
             generateQuestion();
             startTimer();
 
-            document.getElementById('answer-input').addEventListener('keydown', function(event) {
+            document.getElementById('answer-input').addEventListener('keydown', function (event) {
                 if (event.key === 'Enter') {
                     submitAnswer();
                 }
             });
         }
 
-        function giveUp() {
+        function giveUp(isTimeOut = false) {
             clearInterval(timerInterval);
-            document.getElementById('feedback').textContent = `Bạn đã bỏ cuộc! Đáp án là: ${currentAnswer}`;
+
+            if (isTimeOut) {
+                document.getElementById('feedback').textContent = `Bạn đã hết thời gian! Đáp án là: ${currentAnswer}`;
+            } else {
+                document.getElementById('feedback').textContent = `Bạn đã bỏ cuộc! Đáp án là: ${currentAnswer}`;
+            }
+
             document.getElementById('feedback').classList.add('incorrect');
             document.getElementById('feedback').style.opacity = '1';
 
-            // Hide the score
             document.getElementById('score').style.display = 'none';
 
-            // Show high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+            }
             document.getElementById('high-score').textContent = `Điểm cao nhất: ${highScore}`;
             document.getElementById('high-score').style.display = 'block';
 
-            // Hide the start button and show reload message with countdown
             document.getElementById('start-button').classList.add('hidden');
             const reloadMessage = document.getElementById('reload-message');
             reloadMessage.classList.remove('hidden');
 
-            let countdown = 5; // 2 seconds countdown
+            let countdown = 5;
             reloadMessage.innerHTML = `Trang sẽ tự động làm mới trong <span class="rainbow">${countdown}</span> giây...`;
 
             const countdownInterval = setInterval(() => {
@@ -214,25 +266,33 @@
                 reloadMessage.innerHTML = `Trang sẽ tự động làm mới trong <span class="rainbow">${countdown}</span> giây...`;
                 if (countdown <= 0) {
                     clearInterval(countdownInterval);
-                    location.reload(); // Reload the page
+                    location.reload();
                 }
-            }, 1000); // Update countdown every second
+            }, 1000);
 
             resetGameDisplay();
         }
 
         function startTimer() {
-            timeLeft = 30; // Reset time left to 30 seconds
+            timeLeft = 30;
             document.getElementById('timer').textContent = `Thời gian: ${timeLeft}s`;
-            document.getElementById('timer').style.display = 'block'; // Show the timer
+            document.getElementById('timer').style.display = 'block';
             timerInterval = setInterval(() => {
                 timeLeft--;
-                document.getElementById('timer').textContent = `Thời gian: ${timeLeft}s`; // Update the timer display
+                document.getElementById('timer').textContent = `Thời gian: ${timeLeft}s`;
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    giveUp(); // Call giveUp function when time is up
+                    giveUp(true); // Truyền tham số true để thông báo hết thời gian
                 }
-            }, 1000); // Update every second
+            }, 1000);
+        }
+
+        function resetGameDisplay() {
+            document.getElementById('answer-input').classList.add('hidden');
+            document.getElementById('submit-button').classList.add('hidden');
+            document.getElementById('give-up-button').classList.add('hidden');
+            document.getElementById('timer').style.display = 'none';
+            document.getElementById('question').textContent = '';
         }
 
         function generateQuestion() {
@@ -256,52 +316,55 @@
                     break;
             }
 
-            currentAnswer = calculateAnswer(num1, num2, currentOperation);
-            document.getElementById('question').textContent = `Tính: ${num1} ${currentOperation} ${num2} = ?`;
-        }
-
-        function calculateAnswer(num1, num2, operation) {
-            switch (operation) {
-                case '+': return num1 + num2;
-                case '-': return num1 - num2;
-                case '*': return num1 * num2;
-                case '/': return (num2 !== 0) ? (num1 / num2) : 0; // Prevent division by zero
+            let questionText = '';
+            switch (currentOperation) {
+                case '+':
+                    currentAnswer = num1 + num2;
+                    questionText = `${num1} + ${num2}`;
+                    break;
+                case '-':
+                    currentAnswer = num1 - num2;
+                    questionText = `${num1} - ${num2}`;
+                    break;
+                case '*':
+                    currentAnswer = num1 * num2;
+                    questionText = `${num1} * ${num2}`;
+                    break;
+                case '/':
+                    currentAnswer = (num1 / num2).toFixed(2); // 2 chữ số thập phân
+                    questionText = `${num1} / ${num2}`;
+                    break;
             }
+
+            document.getElementById('question').textContent = questionText;
         }
 
+       
         function submitAnswer() {
-            const userAnswer = parseInt(document.getElementById('answer-input').value);
+            const userAnswer = parseFloat(document.getElementById('answer-input').value);
             if (userAnswer === currentAnswer) {
                 score++;
                 document.getElementById('score').textContent = `Điểm: ${score}`;
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('highScore', highScore);
-                }
-                generateQuestion(); // Generate next question
-                document.getElementById('feedback').textContent = 'Đáp án đúng!';
+                document.getElementById('feedback').textContent = 'Chính xác!';
                 document.getElementById('feedback').classList.add('correct');
                 document.getElementById('feedback').classList.remove('incorrect');
                 document.getElementById('feedback').style.opacity = '1';
-                document.getElementById('timer').textContent = `Thời gian: 30s`; // Reset timer display
-                startTimer(); // Restart the timer
-                document.getElementById('answer-input').value = ''; // Clear input
+
+                clearInterval(timerInterval);
+                startTimer();
+                generateQuestion(); // Chỉ tạo câu hỏi mới khi trả lời đúng
+                document.getElementById('answer-input').value = ''; // Xóa đáp án khi trả lời đúng
             } else {
-                document.getElementById('feedback').textContent = 'Đáp án sai!';
+                document.getElementById('feedback').textContent = `Sai rồi! Hãy thử lại.`;
                 document.getElementById('feedback').classList.add('incorrect');
+                document.getElementById('feedback').classList.remove('correct');
                 document.getElementById('feedback').style.opacity = '1';
+                // Câu hỏi giữ nguyên khi trả lời sai, không tạo câu hỏi mới
+                document.getElementById('answer-input').value = '';
             }
         }
 
-        function resetGameDisplay() {
-            // Reset the game interface
-            document.getElementById('answer-input').value = '';
-            document.getElementById('question').textContent = '';
-            document.getElementById('timer').style.display = 'none';
-            document.getElementById('answer-input').classList.add('hidden');
-            document.getElementById('submit-button').classList.add('hidden');
-            document.getElementById('give-up-button').classList.add('hidden');
-        }
     </script>
 </body>
+
 </html>
