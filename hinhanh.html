@@ -62,7 +62,7 @@
 
         .control-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
-        /* Nút Tải Ảnh (Đã thu nhỏ gọn hơn) */
+        /* Nút Tải Ảnh */
         .btn-upload {
             background: linear-gradient(135deg, #4facfe, #00f2fe);
             color: #000; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer;
@@ -73,7 +73,7 @@
         .btn-upload:active { transform: translateY(1px); }
         .btn-upload input[type="file"] { display: none; }
 
-        /* Nút Chọn Kích Thước (Đã thu nhỏ) */
+        /* Nút Chọn Kích Thước */
         .size-select {
             background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px 15px;
             border-radius: 50px; font-weight: 600; color: #fff; outline: none; cursor: pointer; 
@@ -99,7 +99,6 @@
             border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex; justify-content: center; align-items: center; overflow: hidden; 
             box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 5px;
         }
 
         .image-wrapper {
@@ -134,19 +133,23 @@
         .arrow:active { transform: translateY(-50%) scale(0.95); }
         .arrow-left { left: 15px; } .arrow-right { right: 15px; }
 
-        /* Bộ đếm */
+        /* BỘ ĐẾM SỐ (Đã chèn nổi vào bên trong khung ảnh) */
         .image-counter { 
-            text-align: center; margin-top: 10px; font-weight: 700; color: rgba(255,255,255,0.8); 
-            font-size: 1em; letter-spacing: 1.5px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            background: rgba(0,0,0,0.3); padding: 6px 20px; border-radius: 30px; display: inline-block; align-self: center;
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            text-align: center; font-weight: 700; color: rgba(255,255,255,0.9); 
+            font-size: 1.1em; letter-spacing: 1.5px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4); padding: 6px 20px; border-radius: 30px; 
+            z-index: 20; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);
         }
         
-        /* === TỐI ƯU HÓA CHO ĐIỆN THOẠI (Mobile Responsive) === */
+        /* === TỐI ƯU HÓA HOÀN HẢO CHO ĐIỆN THOẠI (Mobile Responsive) === */
         @media (max-width: 768px) {
             .glass-container { 
-                padding: 15px 12px; /* Ép mỏng viền để ảnh to ra */
+                padding: 15px 12px; 
                 border-radius: 20px;
-                height: 95vh;
+                /* Chiều cao 85dvh đảm bảo luôn lọt thỏm giữa màn hình, không bị viền trình duyệt cắn mất */
+                height: 85vh; 
+                height: 85dvh; 
                 width: 98%;
             }
             .header-controls { margin-bottom: 15px; justify-content: center; }
@@ -159,12 +162,12 @@
             .image-viewer { border-radius: 12px; border: none; }
             .image-wrapper img { max-width: 100%; max-height: 100%; border-radius: 8px; }
             
-            /* Nút chuyển ảnh thu nhỏ và nép sát mép viền */
             .arrow { width: 35px; height: 35px; font-size: 1.2em; }
             .arrow-left { left: 5px; } 
             .arrow-right { right: 5px; }
             
-            .image-counter { font-size: 0.9em; padding: 5px 15px; margin-top: 8px;}
+            /* Thu nhỏ một chút bộ đếm trên điện thoại */
+            .image-counter { font-size: 0.9em; padding: 5px 15px; bottom: 10px;}
             #status-container { padding: 6px 12px; }
             #status { font-size: 0.8em; }
         }
@@ -269,8 +272,10 @@
             </div>
             
             <div class="arrow arrow-right" id="nextBtn">&#10095;</div>
+
+            <div class="image-counter" id="imageCounter">1 / 68</div>
         </div>
-        <div class="image-counter" id="imageCounter">1 / 68</div>
+        
     </div>
 
     <script type="module">
