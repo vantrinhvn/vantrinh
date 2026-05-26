@@ -4,285 +4,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Văn Trình học sinh giỏi nhất</title>
+    <title>Hệ Thống Ảnh Portal</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #f06, #ffb3b3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe, #fef08a, #fce7f3);
+            background-size: 300% 300%;
+            animation: gradientMove 12s ease infinite;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0;
             overflow: hidden;
-            flex-direction: column;
-            padding: 10px;
+            color: #1e293b;
+            position: relative;
         }
 
-        .container {
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            max-width: 100%;
-            perspective: 1000px; /* Perspective for 3D effect */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .flip-container {
-            transition: transform 0.6s; /* Smooth transition */
-            transform-style: preserve-3d; /* Preserve 3D effect */
-        }
-
-        .flipped {
-            transform: rotateY(180deg); /* Flip effect */
-        }
-
-        h1 {
-            color: #f06;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .button-group a {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            color: white;
-            background-color: #f06;
-            border-radius: 8px;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-            transition: transform 0.5s, box-shadow 0.2s;
-        }
-
-        .button-group a:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Style for the game button */
-        .game-button {
-            margin-top: 20px; /* Spacing above the button */
-            display: flex;
-            justify-content: center;
-        }
-
-        .game-button a {
-            padding: 12px 25px;
-            font-size: 1.2em;
-            color: white;
-            background-color: transparent; /* Transparent background */
-            border: 3px solid transparent; /* Initial transparent border */
-            border-radius: 8px;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s ease; /* Smooth transitions */
-            position: relative; /* To position the pseudo-element */
-        }
-
-        .game-button a::before {
-            content: '';
+        /* Nền hạt động dạng pastel bay nhẹ */
+        #particle-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); /* Rainbow border */
-            z-index: -1;
-            border-radius: 8px;
-            filter: blur(8px); /* Blur for glowing effect */
-            opacity: 0; /* Start hidden */
-            transition: opacity 0.4s ease; /* Transition for the border */
+            z-index: 0;
+            pointer-events: none;
         }
 
-        .game-button a:hover::before {
-            opacity: 1; /* Show border on hover */
-        }
-
-        .game-button a:hover {
-            color: rgb(158, 158, 0); /* Change text color on hover */
-            border: 3px solid rgb(158, 158, 0); /* Border color on hover */
-            box-shadow: 0 0 20px rgb(158, 158, 0), 0 0 30px rgb(158, 158, 0); /* Glowing effect */
-        }
-
-        .rainbow-group {
-            margin-top: 15px;
-        }
-
-        .rainbow-group a {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 1.1em;
-            color: white;
-            background-image: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
-            background-size: 200%;
-            border-radius: 8px;
-            text-decoration: none;
-            text-transform: uppercase;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: rainbow 3s ease infinite;
-            transition: transform 0.5s, box-shadow 0.2s;
-        }
-
-        @keyframes rainbow {
-            0% {
-                background-position: 0%;
-            }
-            100% {
-                background-position: 100%;
-            }
-        }
-
-        /* Định dạng form đăng nhập */
-        #login-form {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 400px;
-            z-index: 1000;
-            text-align: left;
-        }
-
-        #login-form h2 {
+        /* Container kính mờ tươi sáng */
+        .glass-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.08), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
             text-align: center;
-            color: #333;
-            font-size: 1.8em;
-            margin-bottom: 20px;
+            width: 92%;
+            max-width: 440px;
+            z-index: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
 
-        #login-form input {
+        h1 {
+            font-size: 2.4em;
+            margin-bottom: 35px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #0284c7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 4px 8px rgba(2, 132, 199, 0.1));
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .action-group a {
             display: block;
-            width: 91%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 1em;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        #login-form button {
-            padding: 12px 20px;
-            background-color: #f06;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1em;
-            font-weight: bold;
+            padding: 16px 24px;
+            font-size: 1.15em;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 700;
             text-transform: uppercase;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        #login-form button:hover {
-            background-color: #e00566;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        /* Nút Xem Hình Ảnh - Xanh dương nhạt */
+        .btn-gallery {
+            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
         }
 
-        #error-message {
-            color: red;
-            font-size: 0.9em;
-            display: none;
-            margin-bottom: 10px;
-            text-align: center;
+        .btn-gallery:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(14, 165, 233, 0.3);
+            filter: brightness(1.05);
         }
 
-        /* Mờ nền khi form đăng nhập hiện */
+        .action-group a:active {
+            transform: translateY(-1px);
+        }
+
+        /* Nền mờ cho Form đăng nhập */
         #overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        /* Điều chỉnh cho thiết bị di động */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
+        /* Form xác thực */
+        #login-form {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 45px 35px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.15);
+            width: 92%;
+            max-width: 390px;
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
 
-            .button-group a,
-            .rainbow-group a {
-                padding: 8px 15px;
-                font-size: 1em;
-            }
+        #overlay.active {
+            opacity: 1;
+        }
 
-            #login-form h2 {
-                font-size: 1.6em;
-            }
+        #login-form.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
 
-            #login-form input {
-                padding: 10px;
-            }
+        #login-form h2 {
+            color: #0f172a;
+            font-size: 1.8em;
+            margin-bottom: 28px;
+            font-weight: 700;
+        }
 
-            #login-form button {
-                font-size: 1em;
-                padding: 10px;
-            }
+        #login-form input {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 1em;
+            background: #f8fafc;
+            color: #0f172a;
+            transition: all 0.2s ease;
+        }
+
+        #login-form input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+        }
+
+        #login-form button {
+            width: 100%;
+            padding: 16px;
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+        }
+
+        #login-form button:hover {
+            background: #1e293b;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+
+        #login-form .btn-close {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        #login-form .btn-close:hover {
+            background: #e2e8f0;
+            color: #334155;
+            box-shadow: none;
+        }
+
+        #error-message {
+            color: #ef4444;
+            font-size: 0.95em;
+            display: none;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2em; }
+            .glass-container { padding: 40px 24px; }
         }
     </style>
 </head>
 
 <body>
-    <div class="flip-container" id="flip-container">
-        <div class="container">
-            <h1>Văn Trình học bài</h1>
-            <div class="button-group">
-                <a href="#" onclick="moveButton(this, 'index2.html')">Bài yêu 1</a>
-                <a href="#" onclick="moveButton(this, 'index3.html')">Bài yêu 2</a>
-                <a href="#" onclick="moveButton(this, 'index4.html')">Bài yêu 3</a>
-                <a href="#" onclick="moveButton(this, 'index5.html')">Bài yêu 4</a>
-            </div>
-            <div class="rainbow-group">
-                <a href="#" onclick="showLoginForm()">Xem hình ảnh</a>
-            </div>
-            <div class="game-button">
-                <a href="#" onclick="flipAndNavigate()">Trò chơi toán học</a>
-            </div>
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="glass-container" id="main-container">
+        <h1>Hệ Thống Ảnh</h1>
+        
+        <div class="action-group">
+            <a href="#" class="btn-gallery" onclick="showLoginForm()">📸 Xem hình ảnh</a>
         </div>
     </div>
 
-    <!-- Overlay for login form -->
-    <div id="overlay"></div>
-
-    <!-- Login form -->
+    <div id="overlay" onclick="hideLoginForm()"></div>
     <div id="login-form">
-        <h2>Đăng nhập</h2>
-        <div id="error-message">Tài khoản hoặc mật khẩu không đúng!</div>
-        <input type="text" id="username" placeholder="Tên đăng nhập" required />
+        <h2>Xác Thực Hệ Thống</h2>
+        <div id="error-message">Tài khoản hoặc mật khẩu không chính xác!</div>
+        <input type="text" id="username" placeholder="Tên đăng nhập" required autocomplete="off" />
         <input type="password" id="password" placeholder="Mật khẩu" required />
         <button onclick="login()">Đăng nhập</button>
-        <button onclick="hideLoginForm()" style="margin-top: 10px;">Đóng</button>
+        <button onclick="hideLoginForm()" class="btn-close">Đóng</button>
     </div>
 
     <script>
+        // --- Hiệu ứng hạt động mềm mại ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 4 + 1;
+                this.speedX = Math.random() * 0.4 - 0.2;
+                this.speedY = Math.random() * 0.4 - 0.2;
+                this.opacity = Math.random() * 0.4 + 0.2;
+                const colors = ['#38bdf8', '#2dd4bf', '#fb7185', '#fef08a'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                else if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                else if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 8000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+
+        // --- Chức năng đăng nhập ---
         const validAccounts = {
             "trinh": "2004",
             "ly": "2008",
@@ -291,58 +318,51 @@
             "su": "2008"
         };
 
+        const loginForm = document.getElementById("login-form");
+        const overlay = document.getElementById("overlay");
+        const errorMessage = document.getElementById("error-message");
+
         function showLoginForm() {
-            document.getElementById("login-form").style.display = "block";
-            document.getElementById("overlay").style.display = "block";
+            overlay.style.display = "block";
+            loginForm.style.display = "block";
+            
+            setTimeout(() => {
+                overlay.classList.add('active');
+                loginForm.classList.add('active');
+            }, 20);
+            
+            errorMessage.style.display = "none";
         }
 
         function hideLoginForm() {
-            document.getElementById("login-form").style.display = "none";
-            document.getElementById("overlay").style.display = "none";
+            overlay.classList.remove('active');
+            loginForm.classList.remove('active');
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                loginForm.style.display = 'none';
+            }, 300);
         }
 
         function login() {
-            const username = document.getElementById("username").value;
+            const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value;
 
             if (validAccounts[username] && validAccounts[username] === password) {
                 window.location.href = "hinhanh.html";
             } else {
-                document.getElementById("error-message").style.display = "block";
+                errorMessage.style.display = "block";
+                loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(6px)";
+                setTimeout(() => loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(-6px)", 80);
+                setTimeout(() => loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(0)", 160);
             }
         }
 
-        function moveButton(button, targetPage) {
-            if (!button.dataset.clickCount) {
-                button.dataset.clickCount = 0;
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
             }
-
-            button.dataset.clickCount++;
-
-            const maxOffset = 150;
-            const randomX = (Math.random() - 0.5) * maxOffset * 2;
-            const randomY = (Math.random() - 0.5) * maxOffset * 2;
-
-            if (button.dataset.clickCount <= 5) {
-                button.style.transform = `translate(${randomX}px, ${randomY}px)`;
-                button.style.transition = "transform 0.5s";
-            }
-
-            if (button.dataset.clickCount == 6) {
-                window.location.href = targetPage;
-            }
-        }
-
-        function flipAndNavigate() {
-            const flipContainer = document.getElementById("flip-container");
-            flipContainer.classList.add("flipped"); // Add flipped class for animation
-
-            setTimeout(() => {
-                window.location.href = "trangtinh.html"; // Navigate after the animation completes
-            }, 600); // Match the timeout with the CSS transition duration
-        }
-
-        document.getElementById("overlay").onclick = hideLoginForm;
+        });
     </script>
 </body>
 
