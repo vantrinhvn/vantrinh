@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hệ Thống Ảnh - Premium UI</title>
+    <title>Hệ Thống Ảnh - Bảo Mật Cao</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         
-        /* Nền Aurora siêu đẹp */
+        /* Chống bôi đen toàn trang */
         body {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
             background-color: #e0c3fc;
             background-image: 
                 radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0px, transparent 50%),
@@ -22,6 +26,11 @@
             color: #ffffff;
         }
 
+        /* Khi cố in trang (Ctrl + P), ẩn toàn bộ trang web */
+        @media print {
+            body { display: none !important; }
+        }
+
         @keyframes auroraMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -32,151 +41,72 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.6;
         }
 
-        /* Khung kính mờ cao cấp */
+        /* MÀN HÌNH CHỐNG CHỤP LÉN (Mặc định ẩn) */
+        #antiScreenshotOverlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000000; z-index: 99999; color: #ff4d4d;
+            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+        }
+        #antiScreenshotOverlay h2 { font-size: 2.5em; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;}
+        #antiScreenshotOverlay p { font-size: 1.2em; color: #ffffff; }
+
         .glass-container {
             position: relative;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-top: 1px solid rgba(255, 255, 255, 0.4);
-            border-left: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 30px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            padding: 30px;
-            width: 96%; max-width: 950px; height: 90vh;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.4); border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
+            padding: 30px; width: 96%; max-width: 950px; height: 90vh;
             display: flex; flex-direction: column; z-index: 1;
         }
 
-        /* Phần Header */
-        .header-controls {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
-        }
-
-        h1 {
-            font-size: 2em; font-weight: 800; letter-spacing: 1px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        h1 { font-size: 2em; font-weight: 800; letter-spacing: 1px; background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
         .control-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-
-        /* Nút Tải Ảnh */
-        .btn-upload {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            color: #000; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0, 242, 254, 0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            display: inline-flex; align-items: center; gap: 6px; border: none; font-size: 0.9em;
-        }
+        
+        .btn-upload { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #000; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 15px rgba(0, 242, 254, 0.3); transition: all 0.4s ease; display: inline-flex; align-items: center; gap: 6px; border: none; font-size: 0.9em; }
         .btn-upload:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 20px rgba(0, 242, 254, 0.5); }
-        .btn-upload:active { transform: translateY(1px); }
         .btn-upload input[type="file"] { display: none; }
 
-        /* Nút Chọn Kích Thước */
-        .size-select {
-            background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px 15px;
-            border-radius: 50px; font-weight: 600; color: #fff; outline: none; cursor: pointer; 
-            transition: all 0.3s; backdrop-filter: blur(10px); appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 10px auto;
-            padding-right: 35px; font-size: 0.9em;
-        }
+        .size-select { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px 15px; border-radius: 50px; font-weight: 600; color: #fff; outline: none; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 10px auto; padding-right: 35px; font-size: 0.9em; }
         .size-select option { background: #2a2a35; color: #fff; }
-        .size-select:focus { border-color: #00f2fe; box-shadow: 0 0 15px rgba(0, 242, 254, 0.4); }
 
-        /* Trạng thái thông báo */
-        #status-container {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-width: 120px; padding: 8px 15px; border-radius: 50px; background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease;
-        }
+        #status-container { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; padding: 8px 15px; border-radius: 50px; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
         #status { font-size: 0.85em; font-weight: bold; }
 
-        /* Khung ảnh chính (Tối đa hóa diện tích) */
-        .image-viewer {
-            flex-grow: 1; position: relative; background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex; justify-content: center; align-items: center; overflow: hidden; 
-            box-shadow: inset 0 10px 30px rgba(0,0,0,0.5);
-        }
+        .image-viewer { flex-grow: 1; position: relative; background: rgba(0, 0, 0, 0.2); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: inset 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 5px; touch-action: pan-y; /* Ngăn scroll ngang web khi lướt ảnh */ }
+        .image-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; pointer-events: none; /* Khóa hoàn toàn chuột trên ảnh */ }
+        .image-wrapper img { display: none; max-width: 98%; max-height: 98%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); transition: transform 0.5s ease, opacity 0.5s ease; user-drag: none; -webkit-user-drag: none; object-fit: contain; }
+        .image-wrapper img.active { display: block; animation: imagePop 0.5s forwards; }
+        @keyframes imagePop { 0% { opacity: 0; transform: scale(0.85); filter: blur(5px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
 
-        .image-wrapper {
-            position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;
-        }
-
-        .image-wrapper img {
-            display: none; max-width: 98%; max-height: 98%; border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); 
-            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-            user-drag: none; -webkit-user-drag: none; object-fit: contain;
-        }
-        .image-wrapper img.active { display: block; animation: imagePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
-        @keyframes imagePop { 
-            0% { opacity: 0; transform: scale(0.85); filter: blur(5px); } 
-            100% { opacity: 1; transform: scale(1); filter: blur(0); } 
-        }
-
-        /* Nút Chuyển Ảnh */
-        .arrow {
-            position: absolute; top: 50%; transform: translateY(-50%); font-size: 1.5em; color: #fff;
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); width: 45px; height: 45px;
-            display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 50%;
-            user-select: none; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); z-index: 10;
-        }
-        .arrow:hover { 
-            background: linear-gradient(135deg, #4facfe, #00f2fe); color: #000; 
-            transform: translateY(-50%) scale(1.1); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.5); border-color: transparent;
-        }
-        .arrow:active { transform: translateY(-50%) scale(0.95); }
+        .arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 1.5em; color: #fff; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 50%; user-select: none; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; z-index: 10; }
+        .arrow:hover { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #000; transform: translateY(-50%) scale(1.1); }
         .arrow-left { left: 15px; } .arrow-right { right: 15px; }
-
-        /* BỘ ĐẾM SỐ (Đã chèn nổi vào bên trong khung ảnh) */
-        .image-counter { 
-            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-            text-align: center; font-weight: 700; color: rgba(255,255,255,0.9); 
-            font-size: 1.1em; letter-spacing: 1.5px; text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            background: rgba(0,0,0,0.4); padding: 6px 20px; border-radius: 30px; 
-            z-index: 20; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);
-        }
+        .image-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; font-weight: 700; color: rgba(255,255,255,0.9); font-size: 1.1em; letter-spacing: 1.5px; background: rgba(0,0,0,0.4); padding: 6px 20px; border-radius: 30px; z-index: 20; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); pointer-events: none;}
         
-        /* === TỐI ƯU HÓA HOÀN HẢO CHO ĐIỆN THOẠI (Mobile Responsive) === */
         @media (max-width: 768px) {
-            .glass-container { 
-                padding: 15px 12px; 
-                border-radius: 20px;
-                /* Chiều cao 85dvh đảm bảo luôn lọt thỏm giữa màn hình, không bị viền trình duyệt cắn mất */
-                height: 85vh; 
-                height: 85dvh; 
-                width: 98%;
-            }
+            .glass-container { padding: 15px 12px; border-radius: 20px; height: 85vh; height: 85dvh; width: 98%; }
             .header-controls { margin-bottom: 15px; justify-content: center; }
             h1 { font-size: 1.5em; width: 100%; text-align: center; margin-bottom: 5px; }
-            
             .control-group { gap: 8px; justify-content: center; }
-            .btn-upload { padding: 8px 16px; font-size: 0.85em; }
-            .size-select { padding: 8px 12px; padding-right: 30px; font-size: 0.85em; background-size: 9px auto; }
-            
             .image-viewer { border-radius: 12px; border: none; }
-            .image-wrapper img { max-width: 100%; max-height: 100%; border-radius: 8px; }
-            
             .arrow { width: 35px; height: 35px; font-size: 1.2em; }
-            .arrow-left { left: 5px; } 
-            .arrow-right { right: 5px; }
-            
-            /* Thu nhỏ một chút bộ đếm trên điện thoại */
+            .arrow-left { left: 5px; } .arrow-right { right: 5px; }
             .image-counter { font-size: 0.9em; padding: 5px 15px; bottom: 10px;}
-            #status-container { padding: 6px 12px; }
-            #status { font-size: 0.8em; }
         }
     </style>
 </head>
 <body>
+    
+    <div id="antiScreenshotOverlay">
+        <h2>⚠️ Cảnh báo</h2>
+        <p>Tính năng chụp ảnh màn hình hoặc quay lén đã bị vô hiệu hóa!</p>
+        <p style="font-size: 0.8em; margin-top: 10px; color: #888;">Hãy quay lại trang web để tiếp tục.</p>
+    </div>
+
     <canvas id="particle-canvas"></canvas>
 
-    <div class="glass-container">
+    <div class="glass-container" id="mainApp">
         <div class="header-controls">
             <h1>Hệ Thống Ảnh</h1>
             <div class="control-group">
@@ -197,86 +127,63 @@
             </div>
         </div>
 
-        <div class="image-viewer">
+        <div class="image-viewer" id="swipeArea">
             <div class="arrow arrow-left" id="prevBtn">&#10094;</div>
-            
             <div class="image-wrapper" id="imageWrapper">
-                <img src="1.jpg" alt="Image 1" class="active" oncontextmenu="return false" draggable="false">
-                <img src="2.jpg" alt="Image 2" oncontextmenu="return false" draggable="false">
-                <img src="3.jpg" alt="Image 3" oncontextmenu="return false" draggable="false">
-                <img src="4.jpg" alt="Image 4" oncontextmenu="return false" draggable="false">
-                <img src="5.jpg" alt="Image 5" oncontextmenu="return false" draggable="false">
-                <img src="6.jpg" alt="Image 6" oncontextmenu="return false" draggable="false">
-                <img src="7.jpg" alt="Image 7" oncontextmenu="return false" draggable="false">
-                <img src="8.jpg" alt="Image 8" oncontextmenu="return false" draggable="false">
-                <img src="9.jpg" alt="Image 9" oncontextmenu="return false" draggable="false">
-                <img src="10.jpg" alt="Image 10" oncontextmenu="return false" draggable="false">
-                <img src="11.jpg" alt="Image 11" oncontextmenu="return false" draggable="false">
-                <img src="12.jpg" alt="Image 12" oncontextmenu="return false" draggable="false">
-                <img src="13.jpg" alt="Image 13" oncontextmenu="return false" draggable="false">
-                <img src="14.jpg" alt="Image 14" oncontextmenu="return false" draggable="false">
-                <img src="15.jpg" alt="Image 15" oncontextmenu="return false" draggable="false">
-                <img src="16.jpg" alt="Image 16" oncontextmenu="return false" draggable="false">
-                <img src="17.jpg" alt="Image 17" oncontextmenu="return false" draggable="false">
-                <img src="18.jpg" alt="Image 18" oncontextmenu="return false" draggable="false">
-                <img src="19.jpg" alt="Image 19" oncontextmenu="return false" draggable="false">
-                <img src="20.jpg" alt="Image 20" oncontextmenu="return false" draggable="false">
-                <img src="21.jpg" alt="Image 21" oncontextmenu="return false" draggable="false">
-                <img src="22.jpg" alt="Image 22" oncontextmenu="return false" draggable="false">
-                <img src="23.jpg" alt="Image 23" oncontextmenu="return false" draggable="false">
-                <img src="24.jpg" alt="Image 24" oncontextmenu="return false" draggable="false">
-                <img src="25.jpg" alt="Image 25" oncontextmenu="return false" draggable="false">
-                <img src="26.jpg" alt="Image 26" oncontextmenu="return false" draggable="false">
-                <img src="27.jpg" alt="Image 27" oncontextmenu="return false" draggable="false">
-                <img src="28.jpg" alt="Image 28" oncontextmenu="return false" draggable="false">
-                <img src="29.jpg" alt="Image 29" oncontextmenu="return false" draggable="false">
-                <img src="30.jpg" alt="Image 30" oncontextmenu="return false" draggable="false">
-                <img src="31.jpg" alt="Image 31" oncontextmenu="return false" draggable="false">
-                <img src="32.jpg" alt="Image 32" oncontextmenu="return false" draggable="false">
-                <img src="33.jpg" alt="Image 33" oncontextmenu="return false" draggable="false">
-                <img src="34.jpg" alt="Image 34" oncontextmenu="return false" draggable="false">
-                <img src="35.jpg" alt="Image 35" oncontextmenu="return false" draggable="false">
-                <img src="36.jpg" alt="Image 36" oncontextmenu="return false" draggable="false">
-                <img src="37.jpg" alt="Image 37" oncontextmenu="return false" draggable="false">
-                <img src="38.jpg" alt="Image 38" oncontextmenu="return false" draggable="false">
-                <img src="39.jpg" alt="Image 39" oncontextmenu="return false" draggable="false">
-                <img src="40.jpg" alt="Image 40" oncontextmenu="return false" draggable="false">
-                <img src="41.jpg" alt="Image 41" oncontextmenu="return false" draggable="false">
-                <img src="42.jpg" alt="Image 42" oncontextmenu="return false" draggable="false">
-                <img src="43.jpg" alt="Image 43" oncontextmenu="return false" draggable="false">
-                <img src="44.jpg" alt="Image 44" oncontextmenu="return false" draggable="false">
-                <img src="45.jpg" alt="Image 45" oncontextmenu="return false" draggable="false">
-                <img src="46.jpg" alt="Image 46" oncontextmenu="return false" draggable="false">
-                <img src="47.jpg" alt="Image 47" oncontextmenu="return false" draggable="false">
-                <img src="48.jpg" alt="Image 48" oncontextmenu="return false" draggable="false">
-                <img src="49.jpg" alt="Image 49" oncontextmenu="return false" draggable="false">
-                <img src="50.jpg" alt="Image 50" oncontextmenu="return false" draggable="false">
-                <img src="51.jpg" alt="Image 51" oncontextmenu="return false" draggable="false">
-                <img src="52.jpg" alt="Image 52" oncontextmenu="return false" draggable="false">
-                <img src="53.jpg" alt="Image 53" oncontextmenu="return false" draggable="false">
-                <img src="54.jpg" alt="Image 54" oncontextmenu="return false" draggable="false">
-                <img src="55.jpg" alt="Image 55" oncontextmenu="return false" draggable="false">
-                <img src="56.jpg" alt="Image 56" oncontextmenu="return false" draggable="false">
-                <img src="57.jpg" alt="Image 57" oncontextmenu="return false" draggable="false">
-                <img src="58.jpg" alt="Image 58" oncontextmenu="return false" draggable="false">
-                <img src="59.jpg" alt="Image 59" oncontextmenu="return false" draggable="false">
-                <img src="60.jpg" alt="Image 60" oncontextmenu="return false" draggable="false">
-                <img src="61.jpg" alt="Image 61" oncontextmenu="return false" draggable="false">
-                <img src="62.jpg" alt="Image 62" oncontextmenu="return false" draggable="false">
-                <img src="63.jpg" alt="Image 63" oncontextmenu="return false" draggable="false">
-                <img src="64.jpg" alt="Image 64" oncontextmenu="return false" draggable="false">
-                <img src="65.jpg" alt="Image 65" oncontextmenu="return false" draggable="false">
-                <img src="66.jpg" alt="Image 66" oncontextmenu="return false" draggable="false">
-                <img src="67.jpg" alt="Image 67" oncontextmenu="return false" draggable="false">
-                <img src="68.jpg" alt="Image 68" oncontextmenu="return false" draggable="false">
+                <img src="1.jpg" class="active"><img src="2.jpg"><img src="3.jpg"><img src="4.jpg"><img src="5.jpg">
+                <img src="6.jpg"><img src="7.jpg"><img src="8.jpg"><img src="9.jpg"><img src="10.jpg">
+                <img src="11.jpg"><img src="12.jpg"><img src="13.jpg"><img src="14.jpg"><img src="15.jpg">
+                <img src="16.jpg"><img src="17.jpg"><img src="18.jpg"><img src="19.jpg"><img src="20.jpg">
+                <img src="21.jpg"><img src="22.jpg"><img src="23.jpg"><img src="24.jpg"><img src="25.jpg">
+                <img src="26.jpg"><img src="27.jpg"><img src="28.jpg"><img src="29.jpg"><img src="30.jpg">
+                <img src="31.jpg"><img src="32.jpg"><img src="33.jpg"><img src="34.jpg"><img src="35.jpg">
+                <img src="36.jpg"><img src="37.jpg"><img src="38.jpg"><img src="39.jpg"><img src="40.jpg">
+                <img src="41.jpg"><img src="42.jpg"><img src="43.jpg"><img src="44.jpg"><img src="45.jpg">
+                <img src="46.jpg"><img src="47.jpg"><img src="48.jpg"><img src="49.jpg"><img src="50.jpg">
+                <img src="51.jpg"><img src="52.jpg"><img src="53.jpg"><img src="54.jpg"><img src="55.jpg">
+                <img src="56.jpg"><img src="57.jpg"><img src="58.jpg"><img src="59.jpg"><img src="60.jpg">
+                <img src="61.jpg"><img src="62.jpg"><img src="63.jpg"><img src="64.jpg"><img src="65.jpg">
+                <img src="66.jpg"><img src="67.jpg"><img src="68.jpg">
             </div>
-            
             <div class="arrow arrow-right" id="nextBtn">&#10095;</div>
-
             <div class="image-counter" id="imageCounter">1 / 68</div>
         </div>
-        
     </div>
+
+    <script>
+        // 1. Chặn chuột phải (đã nâng cấp)
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 2. Chặn các phím tắt nguy hiểm
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || 
+               (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+               (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
+               (e.ctrlKey && (e.key === 'S' || e.key === 's')) ||
+               (e.ctrlKey && (e.key === 'P' || e.key === 'p'))) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText(''); 
+                showAntiScreenshot();
+                setTimeout(hideAntiScreenshot, 3000); 
+            }
+        });
+
+        // 3. Xử lý khi cửa sổ bị mất tiêu điểm (Anti Snipping Tool / Vuốt đa nhiệm điện thoại)
+        let isChoosingFile = false; 
+        document.getElementById('fileInput').addEventListener('click', () => isChoosingFile = true);
+
+        const overlay = document.getElementById('antiScreenshotOverlay');
+        const mainApp = document.getElementById('mainApp');
+
+        function showAntiScreenshot() { overlay.style.display = 'flex'; mainApp.style.filter = 'blur(20px)'; }
+        function hideAntiScreenshot() { overlay.style.display = 'none'; mainApp.style.filter = 'none'; }
+
+        window.addEventListener('blur', () => { if (!isChoosingFile) { showAntiScreenshot(); } });
+        window.addEventListener('focus', () => { isChoosingFile = false; hideAntiScreenshot(); });
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -300,75 +207,84 @@
         const statusText = document.getElementById('status');
         const uploadText = document.getElementById('uploadText');
         const sizeSelect = document.getElementById('sizeSelect');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const swipeArea = document.getElementById('swipeArea');
         
         let currentIndex = 0;
         let images = [];
         const sound = new Audio('nhac.mp3'); 
 
-        // Hiển thị thông báo Toast
         function showStatus(text, color) {
-            statusText.innerText = text;
-            statusText.style.color = color;
-            statusContainer.style.opacity = '1';
+            statusText.innerText = text; statusText.style.color = color; statusContainer.style.opacity = '1';
         }
+        function hideStatus() { statusContainer.style.opacity = '0'; }
 
-        function hideStatus() {
-            statusContainer.style.opacity = '0';
-        }
-
-        // --- HÀM ĐIỀU KHIỂN UI ---
         function updateGallery() {
             images = gallery.querySelectorAll('img');
             if (images.length === 0) return;
-            
             counter.innerText = `${currentIndex + 1} / ${images.length}`;
             images.forEach((img, i) => {
-                if(i === currentIndex) {
-                    img.classList.add('active');
-                } else {
-                    img.classList.remove('active');
-                }
+                if(i === currentIndex) img.classList.add('active');
+                else img.classList.remove('active');
             });
             changeImageSize();
         }
 
         function changeImageSize() {
             const scale = sizeSelect.value / 100;
-            images.forEach(img => {
-                img.style.transform = `scale(${scale})`;
-            });
+            images.forEach(img => img.style.transform = `scale(${scale})`);
         }
 
-        document.getElementById('nextBtn').onclick = () => {
+        nextBtn.onclick = () => {
             if (images.length === 0) return;
             currentIndex = (currentIndex + 1) % images.length;
             if (sound.paused) sound.play().catch(() => {});
             updateGallery();
         };
 
-        document.getElementById('prevBtn').onclick = () => {
+        prevBtn.onclick = () => {
             if (images.length === 0) return;
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             if (sound.paused) sound.play().catch(() => {});
             updateGallery();
         };
 
-        sizeSelect.addEventListener('change', changeImageSize);
-        document.addEventListener('contextmenu', e => e.preventDefault());
+        // --- CHỨC NĂNG LƯỚT ẢNH TRÊN MOBILE ---
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-        // --- LOGIC FIREBASE DATABASE ---
+        swipeArea.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        swipeArea.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const SWIPE_THRESHOLD = 50; // Quãng đường vuốt tối thiểu (pixel)
+            if (touchEndX < touchStartX - SWIPE_THRESHOLD) {
+                // Vuốt sang trái
+                nextBtn.click();
+            }
+            if (touchEndX > touchStartX + SWIPE_THRESHOLD) {
+                // Vuốt sang phải
+                prevBtn.click();
+            }
+        }
+        // -------------------------------------
+
+        sizeSelect.addEventListener('change', changeImageSize);
+
         async function loadDatabaseImages() {
             try {
                 const q = query(collection(db, "imagesData"), orderBy("timestamp", "asc"));
                 const querySnapshot = await getDocs(q);
-                
-                querySnapshot.forEach((doc) => {
-                    addImgToUI(doc.data().imageBase64);
-                });
+                querySnapshot.forEach((doc) => addImgToUI(doc.data().imageBase64));
                 updateGallery();
-            } catch (e) {
-                console.log("Database chưa có dữ liệu ảnh nào.", e);
-            }
+            } catch (e) { console.log("Database chưa có dữ liệu ảnh nào."); }
         }
 
         function compressAndConvertImage(file) {
@@ -377,17 +293,10 @@
                 reader.onload = (e) => {
                     const img = new Image();
                     img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        
-                        const MAX_WIDTH = 1200;
-                        let width = img.width; let height = img.height;
-                        if (width > MAX_WIDTH) {
-                            height = Math.round((height * MAX_WIDTH) / width);
-                            width = MAX_WIDTH;
-                        }
+                        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                        const MAX_WIDTH = 1200; let width = img.width; let height = img.height;
+                        if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
                         canvas.width = width; canvas.height = height;
-                        
                         ctx.drawImage(img, 0, 0, width, height);
                         resolve(canvas.toDataURL('image/jpeg', 0.7)); 
                     };
@@ -397,64 +306,45 @@
             });
         }
 
-        document.getElementById('fileInput').onchange = async (e) => {
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
             const files = e.target.files;
-            if (!files || files.length === 0) return;
+            if (!files || files.length === 0) { isChoosingFile = false; return; }
 
             uploadText.innerText = "⏳ Đang xử lý...";
             showStatus("Đang xử lý...", "#00f2fe");
-            
             let uploadedCount = 0, duplicateCount = 0;
             
             for (const file of files) {
                 if (!file.type.startsWith('image/')) continue;
-
                 try {
                     const base64Img = await compressAndConvertImage(file);
-                    
                     let isDuplicate = false;
                     const currentImages = gallery.querySelectorAll('img');
-                    for (let img of currentImages) {
-                        if (img.src === base64Img) { isDuplicate = true; break; }
-                    }
+                    for (let img of currentImages) { if (img.src === base64Img) { isDuplicate = true; break; } }
+                    if (isDuplicate) { duplicateCount++; continue; }
 
-                    if (isDuplicate) {
-                        duplicateCount++; continue; 
-                    }
-
-                    await addDoc(collection(db, "imagesData"), {
-                        imageBase64: base64Img, timestamp: serverTimestamp()
-                    });
-                    
-                    addImgToUI(base64Img);
-                    uploadedCount++;
+                    await addDoc(collection(db, "imagesData"), { imageBase64: base64Img, timestamp: serverTimestamp() });
+                    addImgToUI(base64Img); uploadedCount++;
                 } catch (err) { console.error("Lỗi:", err); }
             }
             
             uploadText.innerText = "📥 Tải ảnh";
-            
-            if (duplicateCount > 0 && uploadedCount === 0) {
-                showStatus("❌ Lỗi: Ảnh đã bị trùng!", "#ff4d4d");
-            } else if (duplicateCount > 0 && uploadedCount > 0) {
-                showStatus(`⚠️ Up ${uploadedCount} ảnh. Bỏ qua ${duplicateCount} trùng.`, "#ffb703");
-            } else {
-                showStatus(`✅ Đã tải lên ${uploadedCount} ảnh!`, "#00e676");
-            }
+            if (duplicateCount > 0 && uploadedCount === 0) showStatus("❌ Lỗi: Ảnh đã bị trùng!", "#ff4d4d");
+            else if (duplicateCount > 0 && uploadedCount > 0) showStatus(`⚠️ Up ${uploadedCount} ảnh. Bỏ qua ${duplicateCount} trùng.`, "#ffb703");
+            else showStatus(`✅ Đã tải lên ${uploadedCount} ảnh!`, "#00e676");
 
             setTimeout(() => hideStatus(), 5000);
             updateGallery();
-            
-            if (uploadedCount > 0) {
-                currentIndex = images.length - 1; 
-                updateGallery();
-            }
+            if (uploadedCount > 0) { currentIndex = images.length - 1; updateGallery(); }
             e.target.value = ''; 
-        };
+            
+            // Xong việc thì reset cờ trạng thái
+            isChoosingFile = false;
+        });
 
         function addImgToUI(src) {
             const img = document.createElement('img');
-            img.src = src; img.draggable = false;
-            img.oncontextmenu = function() { return false; };
+            img.src = src; 
             gallery.appendChild(img);
         }
 
@@ -463,49 +353,16 @@
     </script>
 
     <script>
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-
+        const canvas = document.getElementById('particle-canvas'); const ctx = canvas.getContext('2d'); let particlesArray = [];
         function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
         class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 1.5 - 0.75;
-                this.speedY = Math.random() * 1.5 - 0.75;
-                this.opacity = Math.random() * 0.5 + 0.2;
-            }
-            update() {
-                this.x += this.speedX; this.y += this.speedY;
-                if (this.x > canvas.width) this.x = 0; else if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0; else if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = "#ffffff";
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 1.5 - 0.75; this.speedY = Math.random() * 1.5 - 0.75; this.opacity = Math.random() * 0.5 + 0.2; }
+            update() { this.x += this.speedX; this.y += this.speedY; if (this.x > canvas.width) this.x = 0; else if (this.x < 0) this.x = canvas.width; if (this.y > canvas.height) this.y = 0; else if (this.y < 0) this.y = canvas.height; }
+            draw() { ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
         }
-
-        function initParticles() {
-            particlesArray = [];
-            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 7000);
-            for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle());
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlesArray.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateParticles);
-        }
+        function initParticles() { particlesArray = []; const numberOfParticles = Math.floor((canvas.width * canvas.height) / 7000); for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle()); }
+        function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
         initParticles(); animateParticles();
     </script>
 </body>
