@@ -3,27 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hệ Thống Ảnh - Bảo Mật Cao</title>
+    <title>Hệ thống ảnh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        
+        :root {
+            --ink: #141B2E;
+            --ink-2: #1C2440;
+            --ink-3: #252F50;
+            --line: #313B5C;
+            --paper: #F6F3EC;
+            --text: #E9EDF7;
+            --muted: #929DBA;
+            --lamp: #F4C95D;
+            --lamp-deep: #E2B13F;
+            --ok: #8FD6A4;
+            --warn: #F4C95D;
+            --error: #FF9A8F;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         /* Chống bôi đen toàn trang */
         body {
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            background-color: #e0c3fc;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0px, transparent 50%),
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0px, transparent 50%);
-            background-size: 200% 200%;
-            animation: auroraMove 15s ease infinite alternate;
+            font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1000px 520px at 50% -12%, rgba(244, 201, 93, 0.12), transparent 65%),
+                var(--ink);
             height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            overflow: hidden; position: relative;
-            color: #ffffff;
+            height: 100dvh;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
         /* Khi cố in trang (Ctrl + P), ẩn toàn bộ trang web */
@@ -31,132 +55,308 @@
             body { display: none !important; }
         }
 
-        @keyframes auroraMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        #particle-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.6;
-        }
-
         /* MÀN HÌNH CHỐNG CHỤP LÉN (Mặc định ẩn) */
         #antiScreenshotOverlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000000; z-index: 99999; color: #ff4d4d;
-            flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: #0A0E19;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 24px;
         }
-        #antiScreenshotOverlay h2 { font-size: 2.5em; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;}
-        #antiScreenshotOverlay p { font-size: 1.2em; color: #ffffff; }
+        #antiScreenshotOverlay h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2rem;
+            color: var(--error);
+            margin-bottom: 12px;
+        }
+        #antiScreenshotOverlay p { color: var(--text); font-size: 1.05rem; line-height: 1.6; max-width: 36ch; }
+        #antiScreenshotOverlay p.sub { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
 
-        .glass-container {
+        /* --- Bố cục chính --- */
+        .app {
             position: relative;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.4); border-left: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 30px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05);
-            padding: 30px; width: 96%; max-width: 950px; height: 90vh;
-            display: flex; flex-direction: column; z-index: 1;
+            height: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 14px;
+            padding: 18px 24px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+            transition: filter 0.2s;
         }
 
-        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        h1 { font-size: 2em; font-weight: 800; letter-spacing: 1px; background: linear-gradient(135deg, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); }
-        .control-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        
-        .btn-upload { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #000; padding: 10px 20px; border-radius: 50px; font-weight: 700; cursor: pointer; box-shadow: 0 8px 15px rgba(0, 242, 254, 0.3); transition: all 0.4s ease; display: inline-flex; align-items: center; gap: 6px; border: none; font-size: 0.9em; }
-        .btn-upload:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 20px rgba(0, 242, 254, 0.5); }
-        .btn-upload input[type="file"] { display: none; }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
 
-        .size-select { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); padding: 10px 15px; border-radius: 50px; font-weight: 600; color: #fff; outline: none; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 10px auto; padding-right: 35px; font-size: 0.9em; }
-        .size-select option { background: #2a2a35; color: #fff; }
+        .brand {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
 
-        #status-container { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; padding: 8px 15px; border-radius: 50px; background: rgba(0,0,0,0.2); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
-        #status { font-size: 0.85em; font-weight: bold; }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.01em;
+        }
 
-        .image-viewer { flex-grow: 1; position: relative; background: rgba(0, 0, 0, 0.2); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: inset 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 5px; touch-action: pan-y; /* Ngăn scroll ngang web khi lướt ảnh */ }
-        .image-wrapper { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; pointer-events: none; /* Khóa hoàn toàn chuột trên ảnh */ }
-        .image-wrapper img { display: none; max-width: 98%; max-height: 98%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); transition: transform 0.5s ease, opacity 0.5s ease; user-drag: none; -webkit-user-drag: none; object-fit: contain; }
-        .image-wrapper img.active { display: block; animation: imagePop 0.5s forwards; }
-        @keyframes imagePop { 0% { opacity: 0; transform: scale(0.85); filter: blur(5px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
+        .image-counter {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+        .image-counter b { color: var(--text); font-weight: 600; }
 
-        .arrow { position: absolute; top: 50%; transform: translateY(-50%); font-size: 1.5em; color: #fff; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer; border-radius: 50%; user-select: none; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; z-index: 10; }
-        .arrow:hover { background: linear-gradient(135deg, #4facfe, #00f2fe); color: #000; transform: translateY(-50%) scale(1.1); }
-        .arrow-left { left: 15px; } .arrow-right { right: 15px; }
-        .image-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); text-align: center; font-weight: 700; color: rgba(255,255,255,0.9); font-size: 1.1em; letter-spacing: 1.5px; background: rgba(0,0,0,0.4); padding: 6px 20px; border-radius: 30px; z-index: 20; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); pointer-events: none;}
-        
+        .control-group { display: flex; gap: 10px; align-items: center; }
+
+        .size-select {
+            appearance: none;
+            font: inherit;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--text);
+            background-color: var(--ink-2);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23929DBA'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 10px 36px 10px 14px;
+            cursor: pointer;
+        }
+        .size-select option { background: var(--ink-2); color: var(--text); }
+        .size-select:focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; }
+
+        .btn-upload {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1A1608;
+            background: var(--lamp);
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .btn-upload:hover { background: var(--lamp-deep); }
+        .btn-upload:focus-within { outline: 2px solid var(--text); outline-offset: 2px; }
+        .btn-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+        .btn-upload svg { width: 18px; height: 18px; }
+
+        /* --- Khu vực xem ảnh --- */
+        .image-viewer {
+            position: relative;
+            min-height: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            touch-action: pan-y; /* Ngăn scroll ngang web khi lướt ảnh */
+        }
+
+        .image-wrapper {
+            --scale: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 72px;
+            pointer-events: none; /* Khóa hoàn toàn chuột trên ảnh */
+        }
+
+        /* Ảnh hiển thị như tấm ảnh in có viền giấy */
+        .image-wrapper img {
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            background: var(--paper);
+            padding: 10px;
+            border-radius: 3px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 3px 8px rgba(0, 0, 0, 0.35);
+            transform: scale(var(--scale));
+            transition: transform 0.35s ease;
+            user-drag: none;
+            -webkit-user-drag: none;
+        }
+        .image-wrapper img.active { display: block; animation: develop 0.45s ease both; }
+
+        @keyframes develop {
+            from { opacity: 0; filter: blur(6px) brightness(1.3); }
+            to   { opacity: 1; filter: none; }
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            color: var(--text);
+            background: rgba(28, 36, 64, 0.85);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .arrow svg { width: 20px; height: 20px; }
+        .arrow:hover { background: var(--lamp); color: #1A1608; border-color: var(--lamp); }
+        .arrow:focus-visible { outline: 2px solid var(--lamp); outline-offset: 3px; }
+        .arrow-left { left: 4px; }
+        .arrow-right { right: 4px; }
+
+        /* --- Dải ảnh nhỏ --- */
+        .filmstrip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 6px 2px 8px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--line) transparent;
+            scroll-behavior: smooth;
+        }
+        .filmstrip::-webkit-scrollbar { height: 6px; }
+        .filmstrip::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+        .thumb {
+            flex: 0 0 auto;
+            width: 64px;
+            height: 64px;
+            padding: 0;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            overflow: hidden;
+            background: var(--ink-3);
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s, border-color 0.2s;
+        }
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+            -webkit-user-drag: none;
+        }
+        .thumb:hover { opacity: 0.85; }
+        .thumb.active { opacity: 1; border-color: var(--lamp); }
+        .thumb:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+        /* --- Thông báo trạng thái --- */
+        #status-container {
+            position: fixed;
+            left: 50%;
+            bottom: 104px;
+            transform: translate(-50%, 12px);
+            background: var(--ink-3);
+            border: 1px solid var(--line);
+            padding: 10px 18px;
+            border-radius: 10px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 50;
+            max-width: calc(100% - 32px);
+        }
+        #status-container.show { opacity: 1; transform: translate(-50%, 0); }
+        #status { font-size: 0.92rem; font-weight: 500; }
+
         @media (max-width: 768px) {
-            .glass-container { padding: 15px 12px; border-radius: 20px; height: 85vh; height: 85dvh; width: 98%; }
-            .header-controls { margin-bottom: 15px; justify-content: center; }
-            h1 { font-size: 1.5em; width: 100%; text-align: center; margin-bottom: 5px; }
-            .control-group { gap: 8px; justify-content: center; }
-            .image-viewer { border-radius: 12px; border: none; }
-            .arrow { width: 35px; height: 35px; font-size: 1.2em; }
-            .arrow-left { left: 5px; } .arrow-right { right: 5px; }
-            .image-counter { font-size: 0.9em; padding: 5px 15px; bottom: 10px;}
+            .app { padding: 14px 12px 12px; gap: 10px; }
+            .topbar { gap: 10px; }
+            .brand { width: 100%; justify-content: space-between; }
+            h1 { font-size: 1.4rem; }
+            .control-group { width: 100%; }
+            .size-select { flex: 1; }
+            .btn-upload { flex: 1; justify-content: center; }
+            .image-wrapper { padding: 4px 0; }
+            .image-wrapper img { padding: 6px; }
+            .arrow { width: 38px; height: 38px; background: rgba(20, 27, 46, 0.75); }
+            .arrow svg { width: 16px; height: 16px; }
+            .thumb { width: 50px; height: 50px; }
+            #status-container { bottom: 84px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .image-wrapper img.active { animation: none; }
+            .filmstrip { scroll-behavior: auto; }
         }
     </style>
 </head>
 <body>
-    
+
     <div id="antiScreenshotOverlay">
-        <h2>⚠️ Cảnh báo</h2>
-        <p>Tính năng chụp ảnh màn hình hoặc quay lén đã bị vô hiệu hóa!</p>
-        <p style="font-size: 0.8em; margin-top: 10px; color: #888;">Hãy quay lại trang web để tiếp tục.</p>
+        <h2>Đã ẩn nội dung</h2>
+        <p>Chụp hoặc quay màn hình bị tắt trên trang này.</p>
+        <p class="sub">Quay lại trang để tiếp tục xem ảnh.</p>
     </div>
 
-    <canvas id="particle-canvas"></canvas>
-
-    <div class="glass-container" id="mainApp">
-        <div class="header-controls">
-            <h1>Hệ Thống Ảnh</h1>
+    <div class="app" id="mainApp">
+        <header class="topbar">
+            <div class="brand">
+                <h1>Hệ thống ảnh</h1>
+                <div class="image-counter" id="imageCounter"><b>1</b> / 68</div>
+            </div>
             <div class="control-group">
-                <label class="btn-upload">
-                    <span id="uploadText">📥 Tải ảnh</span>
-                    <input type="file" id="fileInput" accept="image/*" multiple>
-                </label>
-                <select class="size-select" id="sizeSelect">
+                <select class="size-select" id="sizeSelect" aria-label="Cỡ ảnh">
                     <option value="100">Cỡ 100%</option>
                     <option value="75">Cỡ 75%</option>
                     <option value="50">Cỡ 50%</option>
                     <option value="25">Cỡ 25%</option>
                     <option value="10">Cỡ 10%</option>
                 </select>
-                <div id="status-container">
-                    <div id="status"></div>
-                </div>
+                <label class="btn-upload">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+                    <span id="uploadText">Tải ảnh lên</span>
+                    <input type="file" id="fileInput" accept="image/*" multiple>
+                </label>
             </div>
-        </div>
+        </header>
 
         <div class="image-viewer" id="swipeArea">
-            <div class="arrow arrow-left" id="prevBtn">&#10094;</div>
-            <div class="image-wrapper" id="imageWrapper">
-                <img src="1.jpg" class="active"><img src="2.jpg"><img src="3.jpg"><img src="4.jpg"><img src="5.jpg">
-                <img src="6.jpg"><img src="7.jpg"><img src="8.jpg"><img src="9.jpg"><img src="10.jpg">
-                <img src="11.jpg"><img src="12.jpg"><img src="13.jpg"><img src="14.jpg"><img src="15.jpg">
-                <img src="16.jpg"><img src="17.jpg"><img src="18.jpg"><img src="19.jpg"><img src="20.jpg">
-                <img src="21.jpg"><img src="22.jpg"><img src="23.jpg"><img src="24.jpg"><img src="25.jpg">
-                <img src="26.jpg"><img src="27.jpg"><img src="28.jpg"><img src="29.jpg"><img src="30.jpg">
-                <img src="31.jpg"><img src="32.jpg"><img src="33.jpg"><img src="34.jpg"><img src="35.jpg">
-                <img src="36.jpg"><img src="37.jpg"><img src="38.jpg"><img src="39.jpg"><img src="40.jpg">
-                <img src="41.jpg"><img src="42.jpg"><img src="43.jpg"><img src="44.jpg"><img src="45.jpg">
-                <img src="46.jpg"><img src="47.jpg"><img src="48.jpg"><img src="49.jpg"><img src="50.jpg">
-                <img src="51.jpg"><img src="52.jpg"><img src="53.jpg"><img src="54.jpg"><img src="55.jpg">
-                <img src="56.jpg"><img src="57.jpg"><img src="58.jpg"><img src="59.jpg"><img src="60.jpg">
-                <img src="61.jpg"><img src="62.jpg"><img src="63.jpg"><img src="64.jpg"><img src="65.jpg">
-                <img src="66.jpg"><img src="67.jpg"><img src="68.jpg">
-            </div>
-            <div class="arrow arrow-right" id="nextBtn">&#10095;</div>
-            <div class="image-counter" id="imageCounter">1 / 68</div>
+            <button type="button" class="arrow arrow-left" id="prevBtn" aria-label="Ảnh trước">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="image-wrapper" id="imageWrapper"></div>
+            <button type="button" class="arrow arrow-right" id="nextBtn" aria-label="Ảnh tiếp theo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
         </div>
+
+        <nav class="filmstrip" id="filmstrip" aria-label="Danh sách ảnh"></nav>
+    </div>
+
+    <div id="status-container" role="status">
+        <div id="status"></div>
     </div>
 
     <script>
-        // 1. Chặn chuột phải (đã nâng cấp)
+        // 1. Chặn chuột phải
         document.addEventListener('contextmenu', e => e.preventDefault());
 
         // 2. Chặn các phím tắt nguy hiểm
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'F12' || 
+            if (e.key === 'F12' ||
                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
                (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
                (e.ctrlKey && (e.key === 'S' || e.key === 's')) ||
@@ -165,14 +365,14 @@
                 return false;
             }
             if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText(''); 
+                navigator.clipboard.writeText('');
                 showAntiScreenshot();
-                setTimeout(hideAntiScreenshot, 3000); 
+                setTimeout(hideAntiScreenshot, 3000);
             }
         });
 
         // 3. Xử lý khi cửa sổ bị mất tiêu điểm (Anti Snipping Tool / Vuốt đa nhiệm điện thoại)
-        let isChoosingFile = false; 
+        let isChoosingFile = false;
         document.getElementById('fileInput').addEventListener('click', () => isChoosingFile = true);
 
         const overlay = document.getElementById('antiScreenshotOverlay');
@@ -186,9 +386,6 @@
     </script>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
         const firebaseConfig = {
             apiKey: "AIzaSyB9JH7lKRd4uY2WhmitWQ4UL7iMotPhdXg",
             authDomain: "hinhanh-d04a6.firebaseapp.com",
@@ -198,10 +395,27 @@
             appId: "1:429065317450:web:481e7a1c5e70fb6dd74ab3"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
+        // Tải Firebase riêng: nếu mạng lỗi, ảnh có sẵn vẫn hiển thị bình thường
+        let fbPromise = null;
+        function getFirebase() {
+            if (!fbPromise) {
+                fbPromise = Promise.all([
+                    import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"),
+                    import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js")
+                ]).then(([appMod, fs]) => {
+                    const app = appMod.initializeApp(firebaseConfig);
+                    return { db: fs.getFirestore(app), ...fs };
+                });
+                fbPromise.catch(() => { fbPromise = null; });
+            }
+            return fbPromise;
+        }
+
+        // Số ảnh có sẵn trong thư mục (1.jpg ... 68.jpg). Thêm ảnh mới thì tăng số này.
+        const LOCAL_IMAGE_COUNT = 68;
+
         const gallery = document.getElementById('imageWrapper');
+        const filmstrip = document.getElementById('filmstrip');
         const counter = document.getElementById('imageCounter');
         const statusContainer = document.getElementById('status-container');
         const statusText = document.getElementById('status');
@@ -210,45 +424,95 @@
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const swipeArea = document.getElementById('swipeArea');
-        
+
         let currentIndex = 0;
         let images = [];
-        const sound = new Audio('nhac.mp3'); 
+        let statusTimer = null;
+        const sound = new Audio('nhac.mp3');
+
+        function playSound() { if (sound.paused) sound.play().catch(() => {}); }
 
         function showStatus(text, color) {
-            statusText.innerText = text; statusText.style.color = color; statusContainer.style.opacity = '1';
+            statusText.innerText = text;
+            statusText.style.color = color;
+            statusContainer.classList.add('show');
         }
-        function hideStatus() { statusContainer.style.opacity = '0'; }
+        function hideStatus() { statusContainer.classList.remove('show'); }
+
+        function addImgToUI(src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            img.draggable = false;
+            img.loading = 'lazy';
+            gallery.appendChild(img);
+        }
+
+        // Tạo ảnh có sẵn 1.jpg ... 68.jpg
+        for (let i = 1; i <= LOCAL_IMAGE_COUNT; i++) addImgToUI(`${i}.jpg`);
+
+        function syncFilmstrip() {
+            if (filmstrip.children.length !== images.length) {
+                filmstrip.innerHTML = '';
+                images.forEach((img, i) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'thumb';
+                    btn.setAttribute('aria-label', `Ảnh ${i + 1}`);
+                    const t = document.createElement('img');
+                    t.src = img.getAttribute('src');
+                    t.alt = '';
+                    t.loading = 'lazy';
+                    t.draggable = false;
+                    btn.appendChild(t);
+                    btn.addEventListener('click', () => { currentIndex = i; playSound(); updateGallery(); });
+                    filmstrip.appendChild(btn);
+                });
+            }
+            Array.from(filmstrip.children).forEach((b, i) => b.classList.toggle('active', i === currentIndex));
+            const active = filmstrip.children[currentIndex];
+            if (active) {
+                const left = active.offsetLeft - filmstrip.clientWidth / 2 + active.clientWidth / 2;
+                filmstrip.scrollTo({ left });
+            }
+        }
 
         function updateGallery() {
-            images = gallery.querySelectorAll('img');
-            if (images.length === 0) return;
-            counter.innerText = `${currentIndex + 1} / ${images.length}`;
-            images.forEach((img, i) => {
-                if(i === currentIndex) img.classList.add('active');
-                else img.classList.remove('active');
-            });
+            images = Array.from(gallery.querySelectorAll('img'));
+            if (images.length === 0) { counter.innerHTML = 'Chưa có ảnh'; return; }
+            if (currentIndex >= images.length) currentIndex = 0;
+            counter.innerHTML = `<b>${currentIndex + 1}</b> / ${images.length}`;
+            images.forEach((img, i) => img.classList.toggle('active', i === currentIndex));
+            syncFilmstrip();
             changeImageSize();
         }
 
         function changeImageSize() {
-            const scale = sizeSelect.value / 100;
-            images.forEach(img => img.style.transform = `scale(${scale})`);
+            gallery.style.setProperty('--scale', sizeSelect.value / 100);
         }
 
-        nextBtn.onclick = () => {
+        function goNext() {
             if (images.length === 0) return;
             currentIndex = (currentIndex + 1) % images.length;
-            if (sound.paused) sound.play().catch(() => {});
+            playSound();
             updateGallery();
-        };
-
-        prevBtn.onclick = () => {
+        }
+        function goPrev() {
             if (images.length === 0) return;
             currentIndex = (currentIndex - 1 + images.length) % images.length;
-            if (sound.paused) sound.play().catch(() => {});
+            playSound();
             updateGallery();
-        };
+        }
+
+        nextBtn.onclick = goNext;
+        prevBtn.onclick = goPrev;
+
+        // Phím mũi tên trái / phải
+        document.addEventListener('keydown', e => {
+            if (e.target.tagName === 'SELECT') return;
+            if (e.key === 'ArrowRight') goNext();
+            if (e.key === 'ArrowLeft') goPrev();
+        });
 
         // --- CHỨC NĂNG LƯỚT ẢNH TRÊN MOBILE ---
         let touchStartX = 0;
@@ -265,21 +529,15 @@
 
         function handleSwipe() {
             const SWIPE_THRESHOLD = 50; // Quãng đường vuốt tối thiểu (pixel)
-            if (touchEndX < touchStartX - SWIPE_THRESHOLD) {
-                // Vuốt sang trái
-                nextBtn.click();
-            }
-            if (touchEndX > touchStartX + SWIPE_THRESHOLD) {
-                // Vuốt sang phải
-                prevBtn.click();
-            }
+            if (touchEndX < touchStartX - SWIPE_THRESHOLD) goNext();   // Vuốt sang trái
+            if (touchEndX > touchStartX + SWIPE_THRESHOLD) goPrev();   // Vuốt sang phải
         }
-        // -------------------------------------
 
         sizeSelect.addEventListener('change', changeImageSize);
 
         async function loadDatabaseImages() {
             try {
+                const { db, query, collection, orderBy, getDocs } = await getFirebase();
                 const q = query(collection(db, "imagesData"), orderBy("timestamp", "asc"));
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => addImgToUI(doc.data().imageBase64));
@@ -298,7 +556,7 @@
                         if (width > MAX_WIDTH) { height = Math.round((height * MAX_WIDTH) / width); width = MAX_WIDTH; }
                         canvas.width = width; canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7)); 
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
                     };
                     img.src = e.target.result;
                 };
@@ -310,10 +568,11 @@
             const files = e.target.files;
             if (!files || files.length === 0) { isChoosingFile = false; return; }
 
-            uploadText.innerText = "⏳ Đang xử lý...";
-            showStatus("Đang xử lý...", "#00f2fe");
+            uploadText.innerText = "Đang tải lên…";
+            clearTimeout(statusTimer);
+            showStatus("Đang xử lý ảnh…", "var(--text)");
             let uploadedCount = 0, duplicateCount = 0;
-            
+
             for (const file of files) {
                 if (!file.type.startsWith('image/')) continue;
                 try {
@@ -323,47 +582,29 @@
                     for (let img of currentImages) { if (img.src === base64Img) { isDuplicate = true; break; } }
                     if (isDuplicate) { duplicateCount++; continue; }
 
+                    const { db, addDoc, collection, serverTimestamp } = await getFirebase();
                     await addDoc(collection(db, "imagesData"), { imageBase64: base64Img, timestamp: serverTimestamp() });
                     addImgToUI(base64Img); uploadedCount++;
                 } catch (err) { console.error("Lỗi:", err); }
             }
-            
-            uploadText.innerText = "📥 Tải ảnh";
-            if (duplicateCount > 0 && uploadedCount === 0) showStatus("❌ Lỗi: Ảnh đã bị trùng!", "#ff4d4d");
-            else if (duplicateCount > 0 && uploadedCount > 0) showStatus(`⚠️ Up ${uploadedCount} ảnh. Bỏ qua ${duplicateCount} trùng.`, "#ffb703");
-            else showStatus(`✅ Đã tải lên ${uploadedCount} ảnh!`, "#00e676");
 
-            setTimeout(() => hideStatus(), 5000);
+            uploadText.innerText = "Tải ảnh lên";
+            if (duplicateCount > 0 && uploadedCount === 0) showStatus("Ảnh này đã có trong album, không tải lên lại.", "var(--error)");
+            else if (duplicateCount > 0 && uploadedCount > 0) showStatus(`Đã tải lên ${uploadedCount} ảnh, bỏ qua ${duplicateCount} ảnh trùng.`, "var(--warn)");
+            else if (uploadedCount > 0) showStatus(`Đã tải lên ${uploadedCount} ảnh.`, "var(--ok)");
+            else showStatus("Chưa tải lên được ảnh nào. Kiểm tra mạng rồi thử lại.", "var(--error)");
+
+            statusTimer = setTimeout(hideStatus, 5000);
             updateGallery();
             if (uploadedCount > 0) { currentIndex = images.length - 1; updateGallery(); }
-            e.target.value = ''; 
-            
+            e.target.value = '';
+
             // Xong việc thì reset cờ trạng thái
             isChoosingFile = false;
         });
 
-        function addImgToUI(src) {
-            const img = document.createElement('img');
-            img.src = src; 
-            gallery.appendChild(img);
-        }
-
         updateGallery();
         loadDatabaseImages();
-    </script>
-
-    <script>
-        const canvas = document.getElementById('particle-canvas'); const ctx = canvas.getContext('2d'); let particlesArray = [];
-        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resizeCanvas); resizeCanvas();
-        class Particle {
-            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 3 + 1; this.speedX = Math.random() * 1.5 - 0.75; this.speedY = Math.random() * 1.5 - 0.75; this.opacity = Math.random() * 0.5 + 0.2; }
-            update() { this.x += this.speedX; this.y += this.speedY; if (this.x > canvas.width) this.x = 0; else if (this.x < 0) this.x = canvas.width; if (this.y > canvas.height) this.y = 0; else if (this.y < 0) this.y = canvas.height; }
-            draw() { ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
-        }
-        function initParticles() { particlesArray = []; const numberOfParticles = Math.floor((canvas.width * canvas.height) / 7000); for (let i = 0; i < numberOfParticles; i++) particlesArray.push(new Particle()); }
-        function animateParticles() { ctx.clearRect(0, 0, canvas.width, canvas.height); particlesArray.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles); }
-        initParticles(); animateParticles();
     </script>
 </body>
 </html>

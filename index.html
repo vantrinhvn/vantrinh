@@ -4,311 +4,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Ảnh Portal</title>
+    <title>Hệ thống ảnh</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --ink: #141B2E;
+            --ink-2: #1C2440;
+            --line: #313B5C;
+            --paper: #F6F3EC;
+            --text: #E9EDF7;
+            --muted: #929DBA;
+            --lamp: #F4C95D;
+            --lamp-deep: #E2B13F;
+            --error: #FF9A8F;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { height: 100%; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0f2fe, #fef08a, #fce7f3);
-            background-size: 300% 300%;
-            animation: gradientMove 12s ease infinite;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: #1e293b;
+            font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(900px 520px at 12% -8%, rgba(244, 201, 93, 0.13), transparent 62%),
+                radial-gradient(700px 500px at 100% 110%, rgba(110, 140, 220, 0.12), transparent 60%),
+                var(--ink);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: grid;
+            place-items: center;
+            padding: 32px 20px;
+            overflow-x: hidden;
+        }
+
+        /* Lớp hạt nhiễu nhẹ như giấy ảnh */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .page {
             position: relative;
+            width: 100%;
+            max-width: 940px;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            align-items: center;
+            gap: 56px;
         }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- Chồng ảnh trang trí --- */
+        .stack {
+            position: relative;
+            height: 420px;
         }
 
-        /* Nền hạt động dạng pastel bay nhẹ */
-        #particle-canvas {
+        .frame {
             position: absolute;
-            top: 0;
-            left: 0;
+            background: var(--paper);
+            padding: 12px 12px 40px;
+            border-radius: 3px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+            animation: settle 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .frame .pic {
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            border-radius: 1px;
         }
 
-        /* Container kính mờ tươi sáng */
-        .glass-container {
-            position: relative;
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            padding: 50px 40px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.08), 
-                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            text-align: center;
-            width: 92%;
-            max-width: 440px;
-            z-index: 1;
-            transition: transform 0.5s ease, opacity 0.5s ease;
+        .frame:nth-child(1) {
+            width: 230px; height: 280px;
+            left: 0; top: 40px;
+            --r: -9deg;
+            animation-delay: 0.05s;
+        }
+        .frame:nth-child(1) .pic {
+            background:
+                radial-gradient(circle at 70% 30%, #FFE3A3 0 12%, transparent 13%),
+                linear-gradient(180deg, #F7B27A 0%, #E8806B 45%, #5A4A7A 100%);
         }
 
-        h1 {
-            font-size: 2.4em;
-            margin-bottom: 35px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: linear-gradient(135deg, #0284c7, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 4px 8px rgba(2, 132, 199, 0.1));
+        .frame:nth-child(2) {
+            width: 250px; height: 300px;
+            left: 120px; top: 70px;
+            --r: 6deg;
+            animation-delay: 0.18s;
+        }
+        .frame:nth-child(2) .pic {
+            background:
+                linear-gradient(180deg, transparent 55%, #2F6E7E 55%, #1F4A5C 100%),
+                linear-gradient(180deg, #BFE3F0 0%, #8EC5DD 55%);
         }
 
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        .frame:nth-child(3) {
+            width: 200px; height: 245px;
+            left: 40px; top: 0;
+            --r: -2deg;
+            animation-delay: 0.31s;
+        }
+        .frame:nth-child(3) .pic {
+            background:
+                radial-gradient(ellipse at 50% 120%, #3E6B3A 0 45%, transparent 46%),
+                linear-gradient(180deg, #DDE8D0 0%, #A9C49A 100%);
         }
 
-        .action-group a {
-            display: block;
-            padding: 16px 24px;
-            font-size: 1.15em;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 14px;
+        .frame { transform: rotate(var(--r)); }
+
+        @keyframes settle {
+            from { opacity: 0; transform: translateY(36px) rotate(calc(var(--r) * 2.2)); }
+            to   { opacity: 1; transform: translateY(0) rotate(var(--r)); }
+        }
+
+        /* --- Khối đăng nhập --- */
+        .panel h1 {
+            font-family: 'Playfair Display', Georgia, serif;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Nút Xem Hình Ảnh - Xanh dương nhạt */
-        .btn-gallery {
-            background: linear-gradient(135deg, #0ea5e9, #06b6d4);
-        }
-
-        .btn-gallery:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(14, 165, 233, 0.3);
-            filter: brightness(1.05);
-        }
-
-        .action-group a:active {
-            transform: translateY(-1px);
-        }
-
-        /* Nền mờ cho Form đăng nhập */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.3);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        /* Form xác thực */
-        #login-form {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            padding: 45px 35px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(15, 23, 42, 0.15);
-            width: 92%;
-            max-width: 390px;
-            z-index: 1000;
-            text-align: center;
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-        }
-
-        #overlay.active {
-            opacity: 1;
-        }
-
-        #login-form.active {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        #login-form h2 {
-            color: #0f172a;
-            font-size: 1.8em;
-            margin-bottom: 28px;
-            font-weight: 700;
-        }
-
-        #login-form input {
-            width: 100%;
-            padding: 16px;
-            margin-bottom: 20px;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-            font-size: 1em;
-            background: #f8fafc;
-            color: #0f172a;
-            transition: all 0.2s ease;
-        }
-
-        #login-form input:focus {
-            outline: none;
-            border-color: #0ea5e9;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
-        }
-
-        #login-form button {
-            width: 100%;
-            padding: 16px;
-            background: #0f172a;
-            color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
+            font-size: clamp(2.6rem, 6vw, 3.6rem);
+            line-height: 1.05;
+            letter-spacing: -0.01em;
+            color: var(--text);
             margin-bottom: 12px;
         }
 
-        #login-form button:hover {
-            background: #1e293b;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        .panel .lead {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 34ch;
         }
 
-        #login-form .btn-close {
-            background: #f1f5f9;
-            color: #64748b;
+        .field { margin-bottom: 18px; }
+
+        .field label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 8px;
         }
 
-        #login-form .btn-close:hover {
-            background: #e2e8f0;
-            color: #334155;
-            box-shadow: none;
+        .input-wrap { position: relative; }
+
+        .field input {
+            width: 100%;
+            padding: 14px 16px;
+            font: inherit;
+            font-size: 1rem;
+            color: var(--text);
+            background: var(--ink-2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
+
+        .field input::placeholder { color: #5E6888; }
+
+        .field input:focus {
+            outline: none;
+            border-color: var(--lamp);
+            box-shadow: 0 0 0 3px rgba(244, 201, 93, 0.2);
+        }
+
+        .toggle-pass {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--muted);
+            font: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .toggle-pass:hover { color: var(--text); }
+        .toggle-pass:focus-visible { outline: 2px solid var(--lamp); }
+
+        #password { padding-right: 70px; }
 
         #error-message {
-            color: #ef4444;
-            font-size: 0.95em;
             display: none;
-            margin-bottom: 18px;
-            font-weight: 600;
+            color: var(--error);
+            font-size: 0.92rem;
+            line-height: 1.5;
+            margin: -4px 0 18px;
         }
 
-        @media (max-width: 480px) {
-            h1 { font-size: 2em; }
-            .glass-container { padding: 40px 24px; }
+        .btn-submit {
+            width: 100%;
+            margin-top: 8px;
+            padding: 15px 20px;
+            font: inherit;
+            font-size: 1.02rem;
+            font-weight: 600;
+            color: #1A1608;
+            background: var(--lamp);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .btn-submit:hover { background: var(--lamp-deep); }
+        .btn-submit:active { transform: translateY(1px); }
+        .btn-submit:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+
+        .shake { animation: shake 0.32s ease; }
+        @keyframes shake {
+            25% { transform: translateX(7px); }
+            50% { transform: translateX(-7px); }
+            75% { transform: translateX(4px); }
+        }
+
+        @media (max-width: 760px) {
+            body { place-items: start center; padding-top: 28px; }
+            .page { grid-template-columns: 1fr; gap: 28px; max-width: 420px; }
+            .stack { height: 210px; }
+            .frame { padding: 7px 7px 22px; }
+            .frame:nth-child(1) { width: 125px; height: 152px; left: 10%; top: 30px; }
+            .frame:nth-child(2) { width: 138px; height: 166px; left: 38%; top: 40px; }
+            .frame:nth-child(3) { width: 110px; height: 134px; left: 20%; top: 0; }
+            .panel { text-align: left; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .frame, .shake { animation: none; }
         }
     </style>
 </head>
 
 <body>
-    <canvas id="particle-canvas"></canvas>
-
-    <div class="glass-container" id="main-container">
-        <h1>Hệ Thống Ảnh</h1>
-        
-        <div class="action-group">
-            <a href="#" class="btn-gallery" onclick="showLoginForm()">📸 Xem hình ảnh</a>
+    <main class="page">
+        <div class="stack" aria-hidden="true">
+            <div class="frame"><div class="pic"></div></div>
+            <div class="frame"><div class="pic"></div></div>
+            <div class="frame"><div class="pic"></div></div>
         </div>
-    </div>
 
-    <div id="overlay" onclick="hideLoginForm()"></div>
-    <div id="login-form">
-        <h2>Xác Thực Hệ Thống</h2>
-        <div id="error-message">Tài khoản hoặc mật khẩu không chính xác!</div>
-        <input type="text" id="username" placeholder="Tên đăng nhập" required autocomplete="off" />
-        <input type="password" id="password" placeholder="Mật khẩu" required />
-        <button onclick="login()">Đăng nhập</button>
-        <button onclick="hideLoginForm()" class="btn-close">Đóng</button>
-    </div>
+        <section class="panel">
+            <h1>Hệ thống ảnh</h1>
+            <p class="lead">Album riêng của nhóm. Đăng nhập để xem và thêm ảnh.</p>
+
+            <form id="login-form" novalidate>
+                <div class="field">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" placeholder="Ví dụ: trinh" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-wrap">
+                        <input type="password" id="password" placeholder="Nhập mật khẩu" required>
+                        <button type="button" class="toggle-pass" id="togglePass" aria-label="Hiện mật khẩu">Hiện</button>
+                    </div>
+                </div>
+
+                <div id="error-message" role="alert">Sai tên đăng nhập hoặc mật khẩu. Kiểm tra lại rồi thử lần nữa.</div>
+
+                <button type="submit" class="btn-submit">Xem ảnh</button>
+            </form>
+        </section>
+    </main>
 
     <script>
-        // --- Hiệu ứng hạt động mềm mại ---
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 4 + 1;
-                this.speedX = Math.random() * 0.4 - 0.2;
-                this.speedY = Math.random() * 0.4 - 0.2;
-                this.opacity = Math.random() * 0.4 + 0.2;
-                const colors = ['#38bdf8', '#2dd4bf', '#fb7185', '#fef08a'];
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.x > canvas.width) this.x = 0;
-                else if (this.x < 0) this.x = canvas.width;
-                if (this.y > canvas.height) this.y = 0;
-                else if (this.y < 0) this.y = canvas.height;
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        function initParticles() {
-            particlesArray = [];
-            const numberOfParticles = Math.floor((canvas.width * canvas.height) / 8000);
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        initParticles();
-        animateParticles();
-
-
         // --- Chức năng đăng nhập ---
         const validAccounts = {
             "trinh": "2004",
@@ -318,51 +288,36 @@
             "su": "2008"
         };
 
-        const loginForm = document.getElementById("login-form");
-        const overlay = document.getElementById("overlay");
+        const form = document.getElementById("login-form");
         const errorMessage = document.getElementById("error-message");
+        const passInput = document.getElementById("password");
+        const togglePass = document.getElementById("togglePass");
 
-        function showLoginForm() {
-            overlay.style.display = "block";
-            loginForm.style.display = "block";
-            
-            setTimeout(() => {
-                overlay.classList.add('active');
-                loginForm.classList.add('active');
-            }, 20);
-            
-            errorMessage.style.display = "none";
-        }
+        togglePass.addEventListener("click", () => {
+            const hidden = passInput.type === "password";
+            passInput.type = hidden ? "text" : "password";
+            togglePass.textContent = hidden ? "Ẩn" : "Hiện";
+            togglePass.setAttribute("aria-label", hidden ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+        });
 
-        function hideLoginForm() {
-            overlay.classList.remove('active');
-            loginForm.classList.remove('active');
-            
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                loginForm.style.display = 'none';
-            }, 300);
-        }
-
-        function login() {
-            const username = document.getElementById("username").value.trim();
-            const password = document.getElementById("password").value;
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const username = document.getElementById("username").value.trim().toLowerCase();
+            const password = passInput.value;
 
             if (validAccounts[username] && validAccounts[username] === password) {
                 window.location.href = "hinhanh.html";
             } else {
                 errorMessage.style.display = "block";
-                loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(6px)";
-                setTimeout(() => loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(-6px)", 80);
-                setTimeout(() => loginForm.style.transform = "translate(-50%, -50%) scale(1) translateX(0)", 160);
-            }
-        }
-
-        document.getElementById('password').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                login();
+                form.classList.remove("shake");
+                void form.offsetWidth;
+                form.classList.add("shake");
             }
         });
+
+        [document.getElementById("username"), passInput].forEach(el =>
+            el.addEventListener("input", () => errorMessage.style.display = "none")
+        );
     </script>
 </body>
 
