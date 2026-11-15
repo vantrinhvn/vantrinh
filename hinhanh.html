@@ -7,6 +7,10 @@
     <title>Hệ thống ảnh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js" crossorigin>
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -147,6 +151,25 @@
             white-space: nowrap;
         }
         .image-counter b { color: var(--text); font-weight: 700; }
+
+        .sync-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--muted);
+        }
+        .sync-status::before {
+            content: "";
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--sun);
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        .sync-status.ok::before { background: #2FB37A; animation: none; }
+        .sync-status.off::before { background: #C9B8A8; animation: none; }
+        @keyframes pulse { 50% { opacity: 0.35; } }
 
         .control-group { position: relative; display: flex; gap: 10px; align-items: stretch; }
 
@@ -552,7 +575,7 @@
             .topbar { padding: 12px; gap: 10px; border-radius: 20px; }
             .topbar::before { width: 100px; height: 100px; top: -30px; right: -30px; }
             .brand { flex-direction: row; align-items: center; justify-content: space-between; padding: 0 4px; }
-            .tagline { display: none; }
+            .tagline, .sync-status { display: none; }
             h1 { font-size: 1.8rem; }
             .image-counter { margin-top: 0; }
             .image-viewer { border-radius: 22px; }
@@ -608,6 +631,7 @@
                 <span class="tagline">Góc kí ức của nhóm</span>
                 <h1>Hệ thống ảnh</h1>
                 <div class="image-counter" id="imageCounter"><b>1</b> / 68</div>
+                <span class="sync-status" id="syncStatus">Đang tải ảnh trên mây…</span>
             </div>
             <div class="control-group">
                 <select class="size-select" id="sizeSelect" aria-label="Cỡ ảnh">
@@ -749,12 +773,23 @@
                     import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js")
                 ]).then(([appMod, fs]) => {
                     const app = appMod.initializeApp(firebaseConfig);
-                    return { db: fs.getFirestore(app), ...fs };
+                    // Lưu ảnh vào bộ nhớ trình duyệt (IndexedDB): lần mở sau hiện ngay, không chờ mạng
+                    let db;
+                    try {
+                        db = fs.initializeFirestore(app, {
+                            localCache: fs.persistentLocalCache({ tabManager: fs.persistentMultipleTabManager() })
+                        });
+                    } catch (e) {
+                        db = fs.getFirestore(app);
+                    }
+                    return { db, ...fs };
                 });
                 fbPromise.catch(() => { fbPromise = null; });
             }
             return fbPromise;
         }
+        // Bắt đầu tải Firebase ngay, song song với ảnh có sẵn
+        getFirebase().catch(() => {});
 
         // Số ảnh có sẵn trong thư mục (1.jpg ... 68.jpg). Thêm ảnh mới thì tăng số này.
         const LOCAL_IMAGE_COUNT = 68;
@@ -856,8 +891,10 @@
         // Tạo ảnh có sẵn 1.jpg ... 68.jpg
         for (let i = 1; i <= LOCAL_IMAGE_COUNT; i++) addImgToUI(`${i}.jpg`);
 
+        let filmstripDirty = false;
         function syncFilmstrip() {
-            if (filmstrip.children.length !== images.length) {
+            if (filmstripDirty || filmstrip.children.length !== images.length) {
+                filmstripDirty = false;
                 filmstrip.innerHTML = '';
                 images.forEach((img, i) => {
                     const btn = document.createElement('button');
@@ -1076,14 +1113,75 @@
 
         sizeSelect.addEventListener('change', changeImageSize);
 
+        // --- ĐỒNG BỘ ẢNH TRÊN FIREBASE THEO THỜI GIAN THỰC ---
+        // Hiện ngay ảnh đã lưu trong bộ nhớ trình duyệt, rồi tự cập nhật khi có ảnh mới / ảnh bị xóa.
+        const syncStatus = document.getElementById('syncStatus');
+        const dbImgs = new Map();          // id tài liệu -> thẻ <img>
+        let serverSynced = false;          // đã nhận dữ liệu mới nhất từ máy chủ lần nào chưa
+
+        function setSync(text, state) {
+            syncStatus.textContent = text;
+            syncStatus.className = 'sync-status' + (state ? ' ' + state : '');
+        }
+
+        function makeImg(src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = '';
+            img.draggable = false;
+            img.loading = 'lazy';
+            return img;
+        }
+
         async function loadDatabaseImages() {
             try {
-                const { db, query, collection, orderBy, getDocs } = await getFirebase();
+                const { db, query, collection, orderBy, onSnapshot } = await getFirebase();
                 const q = query(collection(db, "imagesData"), orderBy("timestamp", "asc"));
-                const querySnapshot = await getDocs(q);
-                querySnapshot.forEach((doc) => addImgToUI(doc.data().imageBase64));
-                updateGallery();
-            } catch (e) { console.log("Database chưa có dữ liệu ảnh nào."); }
+                onSnapshot(q, { includeMetadataChanges: true }, (snap) => {
+                    const fromServer = !snap.metadata.fromCache;
+                    let changed = false, newFromOthers = 0;
+                    const keep = new Set();
+
+                    let pos = 0;
+                    snap.docs.forEach((d) => {
+                        keep.add(d.id);
+                        let img = dbImgs.get(d.id);
+                        if (!img) {
+                            const data = d.data();
+                            if (!data || !data.imageBase64) return;
+                            img = makeImg(data.imageBase64);
+                            dbImgs.set(d.id, img);
+                            changed = true;
+                            if (serverSynced && !d.metadata.hasPendingWrites) newFromOthers++;
+                        }
+                        // Chỉ di chuyển ảnh khi sai vị trí (tránh ảnh đang xem chạy lại hiệu ứng)
+                        const want = gallery.children[LOCAL_IMAGE_COUNT + pos];
+                        if (want !== img) { gallery.insertBefore(img, want || null); changed = true; }
+                        pos++;
+                    });
+                    for (const [id, img] of dbImgs) {
+                        if (!keep.has(id)) { img.remove(); dbImgs.delete(id); changed = true; }
+                    }
+
+                    if (changed) { filmstripDirty = true; updateGallery(); }
+                    if (fromServer) {
+                        serverSynced = true;
+                        setSync(`Đã cập nhật · ${dbImgs.size} ảnh trên mây`, 'ok');
+                    } else if (!serverSynced) {
+                        setSync(navigator.onLine ? 'Đang cập nhật ảnh mới…' : 'Ngoại tuyến · đang xem ảnh đã lưu', navigator.onLine ? '' : 'off');
+                    }
+                    if (newFromOthers > 0) {
+                        clearTimeout(statusTimer);
+                        showStatus(`Có ${newFromOthers} ảnh mới vừa được thêm vào album.`, "var(--ok)");
+                        statusTimer = setTimeout(hideStatus, 4000);
+                    }
+                }, (err) => {
+                    console.error(err);
+                    setSync('Không tải được ảnh trên mây', 'off');
+                });
+            } catch (e) {
+                setSync('Không kết nối được Firebase', 'off');
+            }
         }
 
         function compressAndConvertImage(file) {
@@ -1125,7 +1223,7 @@
 
                     const { db, addDoc, collection, serverTimestamp } = await getFirebase();
                     await addDoc(collection(db, "imagesData"), { imageBase64: base64Img, timestamp: serverTimestamp() });
-                    addImgToUI(base64Img); uploadedCount++;
+                    uploadedCount++;   // ảnh tự hiện qua đồng bộ trực tiếp
                 } catch (err) { console.error("Lỗi:", err); }
             }
 
