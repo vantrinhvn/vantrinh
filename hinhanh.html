@@ -276,6 +276,82 @@
         .music.playing .eq i:nth-child(3) { animation-delay: 0.6s; }
         @keyframes eq { from { height: 3px; } to { height: 10px; } }
 
+
+        /* --- Nút công cụ ở góc khung ảnh --- */
+        .viewer-tools {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 12;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.3s;
+        }
+        .tool-btn {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            color: var(--coral-ink);
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(150, 100, 60, 0.16);
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+        }
+        .tool-btn svg { width: 20px; height: 20px; }
+        .tool-btn:hover { background: var(--coral-ink); color: #fff; }
+        .tool-btn:active { transform: scale(0.94); }
+        .tool-btn:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+        .tool-btn .ico-b { display: none; }
+        .tool-btn.on .ico-a { display: none; }
+        .tool-btn.on .ico-b { display: block; }
+        #miniPlay.on { color: #fff; background: #23855A; }
+        .mini-counter {
+            display: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 14px;
+            border-radius: 14px;
+            box-shadow: 0 6px 16px rgba(150, 100, 60, 0.16);
+            font-variant-numeric: tabular-nums;
+        }
+        #miniPlay { display: none; }
+
+        /* --- Chế độ toàn màn hình --- */
+        body.is-full .app {
+            max-width: none;
+            padding: 0;
+            gap: 0;
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-areas: "view";
+        }
+        /* Giữ thanh bên sống ngoài màn hình để nhạc YouTube không bị ngắt */
+        body.is-full .topbar,
+        body.is-full .filmstrip {
+            position: fixed;
+            left: -10000px;
+            top: 0;
+            width: 320px;
+            visibility: hidden;
+        }
+        body.is-full .image-viewer { border-radius: 0; box-shadow: none; }
+        body.is-full .image-wrapper { padding: 28px 96px 36px; }
+        body.is-full .mini-counter,
+        body.is-full #miniPlay { display: block; }
+        body.is-full #miniPlay { display: grid; }
+        body.is-full .slide-progress { left: 0; right: 0; bottom: 0; border-radius: 0; height: 5px; }
+        /* Tự ẩn nút khi không di chuột */
+        body.is-full.idle .viewer-tools,
+        body.is-full.idle .arrow { opacity: 0; pointer-events: none; }
+        body.is-full.idle { cursor: none; }
+        .arrow { transition: background 0.2s, color 0.2s, transform 0.2s, opacity 0.3s; }
+
         /* --- Thanh tiến trình trình chiếu --- */
         .slide-progress {
             position: absolute;
@@ -506,6 +582,10 @@
             .music-player { border-radius: 8px; }
             .music-btn { width: 36px; height: 36px; }
             .slide-progress { left: 14px; right: 14px; bottom: 8px; }
+            .viewer-tools { top: 10px; right: 10px; gap: 6px; }
+            .tool-btn { width: 40px; height: 40px; border-radius: 12px; }
+            .mini-counter { padding: 9px 12px; border-radius: 12px; }
+            body.is-full .image-wrapper { padding: 64px 6px 20px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -585,6 +665,17 @@
             </button>
             <div class="image-wrapper" id="imageWrapper" data-fx="develop" data-dir="next"></div>
             <div class="slide-progress" id="slideProgress" aria-hidden="true"><span></span></div>
+            <div class="viewer-tools" id="viewerTools">
+                <span class="mini-counter" id="miniCounter">1 / 68</span>
+                <button type="button" class="tool-btn" id="miniPlay" aria-label="Tự chạy">
+                    <svg class="ico-a" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+                    <svg class="ico-b" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+                </button>
+                <button type="button" class="tool-btn" id="fullBtn" aria-label="Phóng to toàn màn hình" title="Toàn màn hình (F)">
+                    <svg class="ico-a" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+                    <svg class="ico-b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+                </button>
+            </div>
             <button type="button" class="arrow arrow-right" id="nextBtn" aria-label="Ảnh tiếp theo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
@@ -804,6 +895,7 @@
         const playBtn = document.getElementById('playBtn');
         const playText = document.getElementById('playText');
         const slideProgress = document.getElementById('slideProgress');
+        const miniCounter = document.getElementById('miniCounter');
         const FX_LIST = ['fade', 'slide', 'zoom', 'kenburns', 'flip', 'drop', 'spin', 'develop'];
         let navDir = 'next';
         let shownIndex = -1;
@@ -827,6 +919,7 @@
             if (images.length === 0) { counter.innerHTML = 'Chưa có ảnh'; return; }
             if (currentIndex >= images.length) currentIndex = 0;
             counter.innerHTML = `<b>${currentIndex + 1}</b> / ${images.length}`;
+            miniCounter.textContent = `${currentIndex + 1} / ${images.length}`;
             // Chỉ đổi hiệu ứng khi thật sự sang ảnh khác (tránh ảnh đang xem chạy lại hiệu ứng)
             if (currentIndex !== shownIndex) {
                 lastFx = pickEffect();
@@ -882,6 +975,8 @@
             playBtn.classList.add('on');
             playBtn.setAttribute('aria-pressed', 'true');
             playText.textContent = 'Tạm dừng';
+            miniPlay.classList.add('on');
+            miniPlay.setAttribute('aria-label', 'Tạm dừng tự chạy');
             playMusic();
             scheduleNext();
         }
@@ -892,8 +987,58 @@
             playBtn.classList.remove('on');
             playBtn.setAttribute('aria-pressed', 'false');
             playText.textContent = 'Tự chạy';
+            miniPlay.classList.remove('on');
+            miniPlay.setAttribute('aria-label', 'Tự chạy');
         }
+        const miniPlay = document.getElementById('miniPlay');
         playBtn.addEventListener('click', () => slideshowOn ? stopSlideshow() : startSlideshow());
+        miniPlay.addEventListener('click', () => slideshowOn ? stopSlideshow() : startSlideshow());
+
+        // --- PHÓNG TO TOÀN MÀN HÌNH ---
+        // Bật chế độ phủ kín trang (chạy cả trên iPhone) và xin toàn màn hình thật nếu trình duyệt hỗ trợ.
+        const fullBtn = document.getElementById('fullBtn');
+        const rootEl = document.documentElement;
+        let isFull = false;
+        let idleTimer = null;
+
+        function fsElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+
+        function setFullUI(on) {
+            isFull = on;
+            document.body.classList.toggle('is-full', on);
+            fullBtn.classList.toggle('on', on);
+            fullBtn.setAttribute('aria-label', on ? 'Thoát toàn màn hình' : 'Phóng to toàn màn hình');
+            fullBtn.title = on ? 'Thoát (Esc)' : 'Toàn màn hình (F)';
+            if (on) wakeUI(); else { clearTimeout(idleTimer); document.body.classList.remove('idle'); }
+            // Căn lại dải ảnh nhỏ khi quay về
+            if (!on) requestAnimationFrame(syncFilmstrip);
+        }
+        function enterFull() {
+            setFullUI(true);
+            playMusic();
+            const req = rootEl.requestFullscreen || rootEl.webkitRequestFullscreen;
+            if (req) { try { const r = req.call(rootEl); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+        }
+        function exitFull() {
+            setFullUI(false);
+            if (fsElement()) {
+                const ex = document.exitFullscreen || document.webkitExitFullscreen;
+                if (ex) { try { const r = ex.call(document); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+            }
+        }
+        fullBtn.addEventListener('click', () => isFull ? exitFull() : enterFull());
+        // Thoát bằng phím Esc của trình duyệt
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev =>
+            document.addEventListener(ev, () => { if (!fsElement() && isFull) setFullUI(false); })
+        );
+
+        // Tự ẩn nút & con trỏ sau 2.5 giây không di chuột
+        function wakeUI() {
+            document.body.classList.remove('idle');
+            clearTimeout(idleTimer);
+            if (isFull) idleTimer = setTimeout(() => document.body.classList.add('idle'), 2500);
+        }
+        ['mousemove', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, () => { if (isFull) wakeUI(); }, { passive: true }));
         speedSelect.addEventListener('change', () => { applySpeed(); if (slideshowOn) scheduleNext(); });
         applySpeed();
 
@@ -902,6 +1047,8 @@
             if (e.target.tagName === 'SELECT') return;
             if (e.key === 'ArrowRight') goNext();
             if (e.key === 'ArrowLeft') goPrev();
+            if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey) { isFull ? exitFull() : enterFull(); }
+            if (e.key === 'Escape' && isFull) exitFull();
             if (e.key === ' ' && e.target.tagName !== 'BUTTON') {
                 e.preventDefault();
                 slideshowOn ? stopSlideshow() : startSlideshow();
