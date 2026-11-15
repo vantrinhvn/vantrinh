@@ -11,7 +11,6 @@
     <style>
         :root {
             --bg: #FFF7EC;
-            --card: #FFFFFF;
             --text: #3B2F2A;
             --muted: #8C7B70;
             --line: #EDE1D1;
@@ -37,25 +36,10 @@
             -ms-user-select: none;
             font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
             color: var(--text);
-            background:
-                radial-gradient(560px 380px at 4% 0%, rgba(255, 201, 74, 0.32), transparent 65%),
-                radial-gradient(520px 380px at 100% 6%, rgba(255, 173, 196, 0.32), transparent 65%),
-                radial-gradient(640px 460px at 92% 104%, rgba(124, 198, 242, 0.28), transparent 62%),
-                radial-gradient(520px 400px at 0% 100%, rgba(134, 217, 182, 0.28), transparent 62%),
-                var(--bg);
+            background: linear-gradient(160deg, #FFF1DC 0%, var(--bg) 40%, #FDF0F4 100%);
             height: 100vh;
             height: 100dvh;
             overflow: hidden;
-        }
-
-        /* Giấy chấm bi như trang sổ lưu niệm */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image: radial-gradient(rgba(140, 110, 80, 0.15) 1px, transparent 1.2px);
-            background-size: 22px 22px;
         }
 
         /* Khi cố in trang (Ctrl + P), ẩn toàn bộ trang web */
@@ -88,59 +72,72 @@
         #antiScreenshotOverlay p { color: var(--text); font-size: 1.05rem; line-height: 1.6; max-width: 36ch; }
         #antiScreenshotOverlay p.sub { color: var(--muted); font-size: 0.9rem; margin-top: 8px; }
 
-        /* --- Bố cục chính --- */
+        /* --- Bố cục chính: thanh bên trái + khung ảnh lớn --- */
         .app {
             position: relative;
             height: 100%;
             display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 14px;
-            padding: 16px 24px 14px;
-            max-width: 1200px;
+            grid-template-columns: 320px minmax(0, 1fr);
+            grid-template-rows: auto minmax(0, 1fr);
+            grid-template-areas:
+                "top  view"
+                "strip view";
+            gap: 16px 20px;
+            padding: 20px;
+            max-width: 1400px;
             margin: 0 auto;
             transition: filter 0.2s;
         }
 
+        /* Thanh bên: thẻ thông tin */
         .topbar {
+            grid-area: top;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             gap: 16px;
-            flex-wrap: wrap;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(237, 225, 209, 0.9);
-            border-radius: 20px;
-            padding: 10px 12px 10px 20px;
-            box-shadow: 0 10px 30px rgba(150, 100, 60, 0.08);
+            background: #fff;
+            border-radius: 24px;
+            padding: 22px 20px 18px;
+            box-shadow: 0 12px 34px rgba(150, 100, 60, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .topbar::before {
+            content: "";
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 201, 74, 0.45), rgba(255, 173, 196, 0.25) 60%, transparent 70%);
+            pointer-events: none;
         }
 
         .brand {
+            position: relative;
             display: flex;
-            align-items: center;
-            gap: 14px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .tagline {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--coral-ink);
         }
 
         h1 {
             font-family: 'Dancing Script', cursive;
             font-weight: 700;
-            font-size: 2.1rem;
+            font-size: 2.5rem;
             line-height: 1;
             color: var(--text);
         }
-        h1::after {
-            content: "";
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            margin-left: 4px;
-            border-radius: 50%;
-            background: var(--coral);
-            vertical-align: super;
-        }
 
         .image-counter {
+            margin-top: 4px;
             font-size: 0.9rem;
             color: #8A5A1E;
             background: #FFF0C7;
@@ -151,21 +148,23 @@
         }
         .image-counter b { color: var(--text); font-weight: 700; }
 
-        .control-group { display: flex; gap: 10px; align-items: center; }
+        .control-group { position: relative; display: flex; gap: 10px; align-items: stretch; }
 
         .size-select {
+            flex: 1;
+            min-width: 0;
             appearance: none;
             font: inherit;
             font-size: 0.92rem;
             font-weight: 500;
             color: var(--text);
-            background-color: #FFFDF9;
+            background-color: #FFF9F2;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238C7B70'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 14px center;
+            background-position: right 12px center;
             border: 1.5px solid var(--line);
             border-radius: 12px;
-            padding: 10px 36px 10px 14px;
+            padding: 10px 30px 10px 12px;
             cursor: pointer;
             transition: border-color 0.2s;
         }
@@ -175,14 +174,16 @@
 
         .btn-upload {
             position: relative;
+            flex: 1.3;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 700;
             color: #fff;
             background: var(--coral-ink);
-            padding: 10px 18px;
+            padding: 10px 14px;
             border-radius: 12px;
             cursor: pointer;
             box-shadow: 0 8px 18px rgba(220, 68, 51, 0.25);
@@ -195,13 +196,20 @@
         .btn-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
         .btn-upload svg { width: 18px; height: 18px; }
 
-        /* --- Khu vực xem ảnh --- */
+        /* --- Khung xem ảnh lớn --- */
         .image-viewer {
+            grid-area: view;
             position: relative;
             min-height: 0;
             display: flex;
             justify-content: center;
             align-items: center;
+            border-radius: 28px;
+            background:
+                radial-gradient(rgba(140, 110, 80, 0.14) 1px, transparent 1.2px) 0 0 / 20px 20px,
+                linear-gradient(135deg, #FFF3D6 0%, #FFE6EC 50%, #E2F3FF 100%);
+            box-shadow: inset 0 0 0 1px rgba(237, 225, 209, 0.9);
+            overflow: hidden;
             touch-action: pan-y; /* Ngăn scroll ngang web khi lướt ảnh */
         }
 
@@ -213,7 +221,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 14px 76px 10px;
+            padding: 30px 90px;
             pointer-events: none; /* Khóa hoàn toàn chuột trên ảnh */
         }
 
@@ -225,9 +233,9 @@
             max-height: 100%;
             object-fit: contain;
             background: #fff;
-            padding: 12px 12px 42px;
+            padding: 12px 12px 44px;
             border-radius: 4px;
-            box-shadow: 0 26px 50px rgba(150, 100, 60, 0.2), 0 3px 10px rgba(150, 100, 60, 0.12);
+            box-shadow: 0 26px 50px rgba(150, 100, 60, 0.22), 0 3px 10px rgba(150, 100, 60, 0.12);
             transform: scale(var(--scale)) rotate(var(--tilt));
             transition: transform 0.35s ease;
             user-drag: none;
@@ -245,73 +253,77 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             display: grid;
             place-items: center;
             color: var(--coral-ink);
             background: #fff;
-            border: 1px solid var(--line);
+            border: none;
             border-radius: 50%;
             cursor: pointer;
             z-index: 10;
-            box-shadow: 0 8px 20px rgba(150, 100, 60, 0.14);
-            transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
+            box-shadow: 0 8px 20px rgba(150, 100, 60, 0.16);
+            transition: background 0.2s, color 0.2s, transform 0.2s;
         }
         .arrow svg { width: 20px; height: 20px; }
-        .arrow:hover { background: var(--coral-ink); color: #fff; border-color: var(--coral-ink); transform: translateY(-50%) scale(1.06); }
+        .arrow:hover { background: var(--coral-ink); color: #fff; transform: translateY(-50%) scale(1.06); }
         .arrow:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
-        .arrow-left { left: 4px; }
-        .arrow-right { right: 4px; }
+        .arrow-left { left: 18px; }
+        .arrow-right { right: 18px; }
 
-        /* --- Dải ảnh nhỏ --- */
+        /* --- Lưới ảnh nhỏ ở thanh bên --- */
         .filmstrip {
-            display: flex;
+            grid-area: strip;
+            position: relative;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-auto-rows: max-content;
+            align-content: start;
             gap: 10px;
-            overflow-x: auto;
-            padding: 10px 12px 12px;
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(237, 225, 209, 0.9);
-            border-radius: 18px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 14px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 12px 34px rgba(150, 100, 60, 0.1);
             scrollbar-width: thin;
             scrollbar-color: #E6D6C2 transparent;
             scroll-behavior: smooth;
         }
-        .filmstrip::-webkit-scrollbar { height: 6px; }
+        .filmstrip::-webkit-scrollbar { width: 6px; height: 6px; }
         .filmstrip::-webkit-scrollbar-thumb { background: #E6D6C2; border-radius: 3px; }
 
         .thumb {
-            flex: 0 0 auto;
-            width: 62px;
-            height: 62px;
+            width: 100%;
+            aspect-ratio: 1;
             padding: 3px;
             border: 2px solid transparent;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(150, 100, 60, 0.12);
+            border-radius: 14px;
+            background: #FFF9F2;
             cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.2s, border-color 0.2s, transform 0.2s;
+            opacity: 0.7;
+            transition: opacity 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
         .thumb img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-            border-radius: 8px;
+            border-radius: 10px;
             pointer-events: none;
             -webkit-user-drag: none;
         }
-        .thumb:hover { opacity: 0.9; transform: translateY(-2px); }
-        .thumb.active { opacity: 1; border-color: var(--coral); transform: translateY(-3px); box-shadow: 0 8px 16px rgba(255, 122, 92, 0.3); }
+        .thumb:hover { opacity: 1; transform: scale(1.04); }
+        .thumb.active { opacity: 1; border-color: var(--coral); box-shadow: 0 6px 14px rgba(255, 122, 92, 0.3); }
         .thumb:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 
         /* --- Thông báo trạng thái --- */
         #status-container {
             position: fixed;
             left: 50%;
-            bottom: 112px;
+            bottom: 32px;
             transform: translate(-50%, 12px);
             background: #fff;
             border: 1px solid var(--line);
@@ -327,21 +339,45 @@
         #status-container.show { opacity: 1; transform: translate(-50%, 0); }
         #status { font-size: 0.92rem; font-weight: 600; text-align: center; }
 
+        /* Máy tính bảng: thanh bên hẹp lại */
+        @media (max-width: 1024px) {
+            .app { grid-template-columns: 260px minmax(0, 1fr); }
+            .filmstrip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .image-wrapper { padding: 24px 76px; }
+        }
+
+        /* Điện thoại: xếp dọc, dải ảnh nhỏ nằm ngang ở dưới */
         @media (max-width: 768px) {
-            .app { padding: 10px 10px 10px; gap: 10px; }
-            .topbar { gap: 10px; padding: 10px; border-radius: 18px; }
-            .brand { width: 100%; justify-content: space-between; padding: 0 4px; }
-            h1 { font-size: 1.75rem; }
-            .control-group { width: 100%; }
-            .size-select { flex: 1; }
-            .btn-upload { flex: 1; justify-content: center; }
-            .image-wrapper { padding: 10px 2px 4px; }
+            .app {
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: auto minmax(0, 1fr) auto;
+                grid-template-areas: "top" "view" "strip";
+                gap: 10px;
+                padding: 10px;
+            }
+            .topbar { padding: 12px; gap: 10px; border-radius: 20px; }
+            .topbar::before { width: 100px; height: 100px; top: -30px; right: -30px; }
+            .brand { flex-direction: row; align-items: center; justify-content: space-between; padding: 0 4px; }
+            .tagline { display: none; }
+            h1 { font-size: 1.8rem; }
+            .image-counter { margin-top: 0; }
+            .image-viewer { border-radius: 22px; }
+            .image-wrapper { padding: 14px 8px; }
             .image-wrapper img { padding: 7px 7px 26px; }
             .arrow { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.92); }
+            .arrow-left { left: 8px; }
+            .arrow-right { right: 8px; }
             .arrow svg { width: 16px; height: 16px; }
-            .filmstrip { padding: 8px 8px 10px; gap: 8px; border-radius: 16px; }
-            .thumb { width: 50px; height: 50px; padding: 2px; border-radius: 10px; }
-            .thumb img { border-radius: 7px; }
+            .filmstrip {
+                display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 8px;
+                gap: 8px;
+                border-radius: 18px;
+            }
+            .thumb { flex: 0 0 auto; width: 52px; height: 52px; padding: 2px; border-radius: 12px; }
+            .thumb img { border-radius: 8px; }
             #status-container { bottom: 92px; border-radius: 16px; }
         }
 
@@ -362,6 +398,7 @@
     <div class="app" id="mainApp">
         <header class="topbar">
             <div class="brand">
+                <span class="tagline">Góc kí ức của nhóm</span>
                 <h1>Hệ thống ảnh</h1>
                 <div class="image-counter" id="imageCounter"><b>1</b> / 68</div>
             </div>
@@ -520,8 +557,15 @@
             Array.from(filmstrip.children).forEach((b, i) => b.classList.toggle('active', i === currentIndex));
             const active = filmstrip.children[currentIndex];
             if (active) {
-                const left = active.offsetLeft - filmstrip.clientWidth / 2 + active.clientWidth / 2;
-                filmstrip.scrollTo({ left });
+                // Thanh bên (máy tính) cuộn dọc, dải ảnh (điện thoại) cuộn ngang
+                const vertical = filmstrip.scrollHeight > filmstrip.clientHeight + 2 && filmstrip.scrollWidth <= filmstrip.clientWidth + 2;
+                if (vertical) {
+                    const top = active.offsetTop - filmstrip.clientHeight / 2 + active.clientHeight / 2;
+                    filmstrip.scrollTo({ top });
+                } else {
+                    const left = active.offsetLeft - filmstrip.clientWidth / 2 + active.clientWidth / 2;
+                    filmstrip.scrollTo({ left });
+                }
             }
         }
 

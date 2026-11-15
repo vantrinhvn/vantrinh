@@ -12,7 +12,6 @@
     <style>
         :root {
             --bg: #FFF7EC;
-            --card: #FFFFFF;
             --text: #3B2F2A;
             --muted: #8C7B70;
             --line: #EDE1D1;
@@ -23,188 +22,223 @@
             --sky: #7CC6F2;
             --mint: #86D9B6;
             --pink: #FFADC4;
+            --wood: #C99A6B;
             --error: #CF3B2B;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html, body { height: 100%; }
+        html, body { min-height: 100%; }
 
         body {
             font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
             color: var(--text);
             background:
-                radial-gradient(620px 420px at 8% 4%, rgba(255, 201, 74, 0.35), transparent 65%),
-                radial-gradient(560px 420px at 96% 12%, rgba(255, 173, 196, 0.35), transparent 65%),
-                radial-gradient(700px 520px at 85% 105%, rgba(124, 198, 242, 0.32), transparent 62%),
-                radial-gradient(520px 420px at 0% 100%, rgba(134, 217, 182, 0.32), transparent 62%),
-                var(--bg);
+                linear-gradient(180deg, #DDF1FF 0%, #FFF1E0 46%, var(--bg) 70%);
             min-height: 100vh;
             min-height: 100dvh;
-            display: grid;
-            place-items: center;
-            padding: 32px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             overflow-x: hidden;
         }
 
-        /* Giấy chấm bi nhẹ như trang sổ lưu niệm */
-        body::before {
-            content: "";
+        /* Mặt trời & mây trang trí */
+        .sky-deco {
             position: fixed;
             inset: 0;
             pointer-events: none;
-            background-image: radial-gradient(rgba(140, 110, 80, 0.16) 1px, transparent 1.2px);
-            background-size: 22px 22px;
-            mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.4) 100%);
-            -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 0;
+            background:
+                radial-gradient(circle at 86% 9%, #FFE27A 0 46px, rgba(255, 210, 90, 0.35) 47px, transparent 120px),
+                radial-gradient(70px 26px at 14% 12%, #fff 98%, transparent),
+                radial-gradient(46px 22px at 19% 9%, #fff 98%, transparent),
+                radial-gradient(60px 22px at 70% 20%, rgba(255,255,255,0.9) 98%, transparent),
+                radial-gradient(38px 18px at 74% 17%, rgba(255,255,255,0.9) 98%, transparent);
         }
 
-        /* Lấp lánh trang trí */
-        .sparkle {
+        /* Cỏ hoa ở chân trang */
+        .meadow {
             position: fixed;
+            left: 0; right: 0; bottom: 0;
+            height: 90px;
             pointer-events: none;
-            width: 22px;
-            height: 22px;
-            animation: twinkle 3.2s ease-in-out infinite;
-        }
-        .sparkle svg { width: 100%; height: 100%; display: block; }
-        .sparkle.s1 { top: 9%;  left: 7%;  color: var(--sun);  }
-        .sparkle.s2 { top: 16%; right: 9%; color: var(--pink); width: 16px; height: 16px; animation-delay: 0.8s; }
-        .sparkle.s3 { bottom: 12%; left: 12%; color: var(--sky); width: 14px; height: 14px; animation-delay: 1.6s; }
-        .sparkle.s4 { bottom: 8%; right: 14%; color: var(--coral); width: 18px; height: 18px; animation-delay: 2.2s; }
-
-        @keyframes twinkle {
-            0%, 100% { transform: scale(0.8) rotate(0deg); opacity: 0.55; }
-            50%      { transform: scale(1.15) rotate(20deg); opacity: 1; }
+            z-index: 0;
+            background:
+                radial-gradient(circle at 8% 40%, #FF8FAE 0 5px, transparent 6px),
+                radial-gradient(circle at 21% 55%, #FFC94A 0 4px, transparent 5px),
+                radial-gradient(circle at 37% 45%, #FF8FAE 0 4px, transparent 5px),
+                radial-gradient(circle at 63% 52%, #FFC94A 0 5px, transparent 6px),
+                radial-gradient(circle at 79% 42%, #FF8FAE 0 4px, transparent 5px),
+                radial-gradient(circle at 93% 56%, #FFC94A 0 4px, transparent 5px),
+                radial-gradient(120% 100% at 50% 100%, #BDE8A8 0 58%, transparent 59%);
+            opacity: 0.8;
         }
 
-        .page {
+        /* --- Dây phơi ảnh --- */
+        .clothesline {
             position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 960px;
-            display: grid;
-            grid-template-columns: 1.05fr 1fr;
-            align-items: center;
-            gap: 56px;
+            max-width: 1040px;
+            height: 268px;
+            margin-top: 4px;
+            flex-shrink: 0;
         }
 
-        /* --- Chồng ảnh polaroid --- */
-        .stack {
-            position: relative;
-            height: 440px;
-        }
-
-        .frame {
+        .clothesline .rope {
             position: absolute;
-            background: #fff;
-            padding: 12px 12px 46px;
-            border-radius: 4px;
-            box-shadow: 0 22px 44px rgba(150, 100, 60, 0.18), 0 2px 6px rgba(150, 100, 60, 0.12);
-            transform: rotate(var(--r));
-            animation: settle 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100px;
+            overflow: visible;
         }
 
-        /* Băng dính washi */
-        .frame::before {
+        .hang {
+            position: absolute;
+            left: var(--x);
+            top: calc(var(--y) * 1px - 6px);
+            transform: translateX(-50%);
+        }
+
+        .polaroid {
+            position: relative;
+            width: 150px;
+            height: 184px;
+            background: #fff;
+            padding: 9px 9px 36px;
+            border-radius: 3px;
+            box-shadow: 0 16px 30px rgba(120, 90, 60, 0.18), 0 2px 5px rgba(120, 90, 60, 0.12);
+            transform-origin: 50% -6px;
+            transform: rotate(var(--r, 0deg));
+            animation: sway 4.5s ease-in-out infinite alternate, drop 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            animation-delay: var(--d, 0s), calc(var(--d, 0s) * 0.3);
+        }
+
+        /* Kẹp gỗ */
+        .polaroid::before {
             content: "";
             position: absolute;
-            top: -13px;
+            top: -14px;
             left: 50%;
-            width: 88px;
-            height: 26px;
-            transform: translateX(-50%) rotate(var(--tape-r, -4deg));
-            background: var(--tape);
-            opacity: 0.85;
-            border-radius: 2px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0 6px, transparent 6px 12px);
+            width: 12px;
+            height: 30px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #B98757 0 45%, #A87648 45% 55%, #D3A677 55%);
+            border-radius: 3px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
         }
 
-        .frame .pic {
-            width: 100%;
-            height: 100%;
-            border-radius: 2px;
-        }
+        .polaroid .pic { width: 100%; height: 100%; border-radius: 2px; }
 
-        .frame .cap {
+        .polaroid .cap {
             position: absolute;
-            left: 0; right: 0; bottom: 9px;
+            left: 0; right: 0; bottom: 6px;
             text-align: center;
             font-family: 'Dancing Script', cursive;
             font-weight: 700;
-            font-size: 1.3rem;
+            font-size: 1.15rem;
             color: #7A6558;
         }
 
-        .frame:nth-child(1) {
-            width: 230px; height: 286px;
-            left: 0; top: 52px;
-            --r: -9deg;
-            --tape: var(--pink);
-            animation-delay: 0.05s;
+        @keyframes sway {
+            from { transform: rotate(calc(var(--r, 0deg) - 2.5deg)); }
+            to   { transform: rotate(calc(var(--r, 0deg) + 2.5deg)); }
         }
-        .frame:nth-child(1) .pic {
-            background:
-                radial-gradient(circle at 68% 34%, #FFF3B0 0 11%, #FFE07A 12%, transparent 13%),
-                linear-gradient(180deg, transparent 72%, #FFB3A1 72%, #FF9C8A 100%),
-                linear-gradient(180deg, #FFE3B8 0%, #FFC0A8 55%, #FFB3C7 100%);
+        @keyframes drop {
+            from { opacity: 0; translate: 0 -40px; }
+            to   { opacity: 1; translate: 0 0; }
         }
 
-        .frame:nth-child(1) .cap { text-align: left; padding-left: 22px; }
+        /* Vị trí theo đường cong của dây: y = 30 + 120·t·(1 − t) */
+        .h1 { --x: 10%; --y: 41; }
+        .h2 { --x: 30%; --y: 55; }
+        .h3 { --x: 50%; --y: 60; }
+        .h4 { --x: 70%; --y: 55; }
+        .h5 { --x: 90%; --y: 41; }
 
-        .frame:nth-child(2) {
-            width: 252px; height: 306px;
-            left: 128px; top: 92px;
-            --r: 6deg;
-            --tape: var(--sky);
-            --tape-r: 5deg;
-            animation-delay: 0.18s;
-        }
-        .frame:nth-child(2) .pic {
+        .h1 .polaroid { --r: -4deg; --d: 0s; }
+        .h2 .polaroid { --r: 3deg;  --d: 0.6s; }
+        .h3 .polaroid { --r: -2deg; --d: 1.2s; }
+        .h4 .polaroid { --r: 4deg;  --d: 0.3s; }
+        .h5 .polaroid { --r: -3deg; --d: 0.9s; }
+
+        .h1 .pic { /* hoàng hôn */
             background:
-                radial-gradient(circle at 22% 24%, #fff 0 5%, transparent 5.5%),
-                radial-gradient(circle at 28% 22%, #fff 0 6%, transparent 6.5%),
+                radial-gradient(circle at 50% 62%, #FFF0A8 0 14%, transparent 15%),
+                linear-gradient(180deg, transparent 66%, #FF9C8A 66%, #F98AA0 100%),
+                linear-gradient(180deg, #FFE3B8 0%, #FFC0A8 60%);
+        }
+        .h2 .pic { /* biển */
+            background:
                 linear-gradient(180deg, transparent 74%, #FFE6AE 74%, #FFD98A 100%),
-                linear-gradient(180deg, transparent 52%, #58C3E0 52%, #3AA8CC 74%),
-                linear-gradient(180deg, #CFEFFF 0%, #A6DDFB 52%);
+                linear-gradient(180deg, transparent 50%, #58C3E0 50%, #3AA8CC 74%),
+                linear-gradient(180deg, #CFEFFF 0%, #A6DDFB 50%);
         }
-
-        .frame:nth-child(3) {
-            width: 204px; height: 252px;
-            left: 46px; top: 0;
-            --r: -2deg;
-            --tape: var(--sun);
-            --tape-r: -7deg;
-            animation-delay: 0.31s;
-        }
-        .frame:nth-child(3) .pic {
+        .h3 .pic { /* bánh sinh nhật */
             background:
-                radial-gradient(circle at 24% 78%, #FF8FAE 0 4%, transparent 4.5%),
-                radial-gradient(circle at 52% 84%, #FFC94A 0 4%, transparent 4.5%),
-                radial-gradient(circle at 76% 76%, #FF8FAE 0 4%, transparent 4.5%),
-                radial-gradient(ellipse at 50% 125%, #7CCF7A 0 52%, transparent 53%),
+                radial-gradient(circle at 50% 26%, #FFC94A 0 4%, transparent 4.5%),
+                linear-gradient(90deg, transparent 48%, #FF8FAE 48% 52%, transparent 52%) 0 0 / 100% 40% no-repeat,
+                linear-gradient(180deg, transparent 40%, #FFF 40% 48%, #FFB3C7 48% 70%, #FFF 70% 74%, #FF8FAE 74% 90%, transparent 90%) 50% 0 / 64% 100% no-repeat,
+                linear-gradient(180deg, #FFF6D8, #FFE9B8);
+        }
+        .h4 .pic { /* đồi hoa */
+            background:
+                radial-gradient(circle at 24% 80%, #FF8FAE 0 4%, transparent 4.5%),
+                radial-gradient(circle at 52% 86%, #FFC94A 0 4%, transparent 4.5%),
+                radial-gradient(circle at 76% 78%, #FF8FAE 0 4%, transparent 4.5%),
+                radial-gradient(ellipse at 30% 130%, #7CCF7A 0 60%, transparent 61%),
+                radial-gradient(ellipse at 85% 120%, #9BDB8A 0 50%, transparent 51%),
                 linear-gradient(180deg, #E9F8FF 0%, #D6F2E4 100%);
         }
-
-        @keyframes settle {
-            from { opacity: 0; transform: translateY(36px) rotate(calc(var(--r) * 2.2)); }
-            to   { opacity: 1; transform: translateY(0) rotate(var(--r)); }
+        .h5 .pic { /* bầu trời đêm sao */
+            background:
+                radial-gradient(circle at 70% 28%, #FFF3B0 0 10%, transparent 11%),
+                radial-gradient(circle at 25% 20%, #fff 0 2%, transparent 2.5%),
+                radial-gradient(circle at 40% 48%, #fff 0 1.6%, transparent 2%),
+                radial-gradient(circle at 82% 60%, #fff 0 1.6%, transparent 2%),
+                linear-gradient(180deg, #9CA9F2 0%, #C6B6F2 60%, #F2C6E0 100%);
         }
 
-        /* --- Khối đăng nhập --- */
+        /* --- Thẻ đăng nhập ở giữa --- */
+        .page {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 0 20px 110px;
+        }
+
         .panel {
-            background: rgba(255, 255, 255, 0.86);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(237, 225, 209, 0.9);
-            border-radius: 26px;
-            padding: 36px 34px 34px;
-            box-shadow: 0 30px 60px rgba(150, 100, 60, 0.14), 0 2px 8px rgba(150, 100, 60, 0.06);
-            animation: rise 0.7s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            border-radius: 28px;
+            padding: 40px 34px 30px;
+            text-align: center;
+            box-shadow: 0 30px 70px rgba(150, 100, 60, 0.16), 0 2px 8px rgba(150, 100, 60, 0.06);
+            animation: rise 0.7s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
         }
+
+        /* Băng dính giữ thẻ */
+        .panel::before,
+        .panel::after {
+            content: "";
+            position: absolute;
+            top: -12px;
+            width: 92px;
+            height: 26px;
+            opacity: 0.85;
+            border-radius: 2px;
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.4) 0 6px, transparent 6px 12px);
+        }
+        .panel::before { left: 26px; transform: rotate(-6deg); background-color: var(--sun); }
+        .panel::after  { right: 26px; transform: rotate(5deg); background-color: var(--mint); }
 
         @keyframes rise {
-            from { opacity: 0; transform: translateY(18px); }
+            from { opacity: 0; transform: translateY(20px); }
             to   { opacity: 1; transform: none; }
         }
 
@@ -219,34 +253,31 @@
             background: #FFF0C7;
             padding: 6px 12px;
             border-radius: 999px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
         .eyebrow svg { width: 14px; height: 14px; color: var(--coral); }
 
         .panel h1 {
             font-family: 'Dancing Script', cursive;
             font-weight: 700;
-            font-size: clamp(2.9rem, 6.5vw, 3.9rem);
+            font-size: clamp(2.8rem, 9vw, 3.5rem);
             line-height: 1;
             color: var(--text);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        .panel h1 .accent {
-            background: linear-gradient(90deg, var(--coral-ink), #E8578A);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
+        .panel h1 .accent { color: var(--coral-ink); }
 
         .panel .lead {
             color: var(--muted);
-            font-size: 1rem;
+            font-size: 0.98rem;
             line-height: 1.6;
-            margin-bottom: 28px;
-            max-width: 34ch;
+            margin: 0 auto 26px;
+            max-width: 32ch;
         }
 
-        .field { margin-bottom: 18px; }
+        form { text-align: left; }
+
+        .field { margin-bottom: 16px; }
 
         .field label {
             display: block;
@@ -258,22 +289,31 @@
 
         .input-wrap { position: relative; }
 
+        .input-wrap .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            transform: translateY(-50%);
+            color: #C2A995;
+            pointer-events: none;
+        }
+
         .field input {
             width: 100%;
-            padding: 14px 16px;
+            padding: 14px 16px 14px 44px;
             font: inherit;
             font-size: 1rem;
             color: var(--text);
-            background: #FFFDF9;
+            background: #FFF9F2;
             border: 1.5px solid var(--line);
             border-radius: 14px;
             transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
         .field input::placeholder { color: #B9A99C; }
-
         .field input:hover { border-color: #E2D1BC; }
-
         .field input:focus {
             outline: none;
             background: #fff;
@@ -311,7 +351,7 @@
             padding: 10px 14px;
             font-size: 0.92rem;
             line-height: 1.5;
-            margin: -2px 0 18px;
+            margin: 0 0 16px;
         }
 
         .btn-submit {
@@ -328,7 +368,7 @@
             color: #fff;
             background: var(--coral-ink);
             border: none;
-            border-radius: 14px;
+            border-radius: 999px;
             cursor: pointer;
             box-shadow: 0 10px 22px rgba(220, 68, 51, 0.28);
             transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
@@ -339,6 +379,14 @@
         .btn-submit:active { transform: translateY(1px); }
         .btn-submit:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 
+        .foot-note {
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #A08B7C;
+        }
+
         .shake { animation: shake 0.32s ease; }
         @keyframes shake {
             25% { transform: translateX(7px); }
@@ -347,38 +395,41 @@
         }
 
         @media (max-width: 760px) {
-            body { place-items: start center; padding: 24px 16px 32px; }
-            .page { grid-template-columns: 1fr; gap: 22px; max-width: 440px; }
-            .stack { height: 230px; }
-            .frame { padding: 7px 7px 28px; }
-            .frame::before { width: 54px; height: 16px; top: -8px; }
-            .frame .cap { font-size: 0.95rem; bottom: 5px; }
-            .frame:nth-child(1) .cap { padding-left: 14px; }
-            .frame:nth-child(1) { width: 128px; height: 160px; left: 6%;  top: 40px; }
-            .frame:nth-child(2) { width: 140px; height: 172px; left: 44%; top: 48px; }
-            .frame:nth-child(3) { width: 116px; height: 144px; left: 24%; top: 4px; }
-            .panel { padding: 28px 22px 24px; border-radius: 22px; }
+            .clothesline { height: 200px; }
+            .polaroid { width: 96px; height: 120px; padding: 6px 6px 24px; }
+            .polaroid::before { width: 9px; height: 22px; top: -10px; }
+            .polaroid .cap { font-size: 0.85rem; bottom: 4px; }
+            .h1, .h5 { display: none; }
+            .h2 { --x: 20%; --y: 49; }
+            .h3 { --x: 50%; --y: 60; }
+            .h4 { --x: 80%; --y: 49; }
+            .page { padding: 0 16px 90px; }
+            .panel { padding: 34px 22px 24px; border-radius: 24px; }
+            .meadow { height: 64px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .frame, .shake, .panel, .sparkle { animation: none; }
+            .polaroid, .shake, .panel { animation: none; }
         }
     </style>
 </head>
 
 <body>
-    <span class="sparkle s1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
-    <span class="sparkle s2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
-    <span class="sparkle s3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
-    <span class="sparkle s4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
+    <div class="sky-deco" aria-hidden="true"></div>
+    <div class="meadow" aria-hidden="true"></div>
+
+    <div class="clothesline" aria-hidden="true">
+        <svg class="rope" viewBox="0 0 1000 100" preserveAspectRatio="none">
+            <path d="M0 30 Q500 90 1000 30" fill="none" stroke="#B48A63" stroke-width="2.2" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="hang h1"><div class="polaroid"><div class="pic"></div><span class="cap">hoàng hôn</span></div></div>
+        <div class="hang h2"><div class="polaroid"><div class="pic"></div><span class="cap">biển xanh</span></div></div>
+        <div class="hang h3"><div class="polaroid"><div class="pic"></div><span class="cap">sinh nhật</span></div></div>
+        <div class="hang h4"><div class="polaroid"><div class="pic"></div><span class="cap">mùa hè</span></div></div>
+        <div class="hang h5"><div class="polaroid"><div class="pic"></div><span class="cap">đêm sao</span></div></div>
+    </div>
 
     <main class="page">
-        <div class="stack" aria-hidden="true">
-            <div class="frame"><div class="pic"></div><span class="cap">mùa hè</span></div>
-            <div class="frame"><div class="pic"></div><span class="cap">biển xanh</span></div>
-            <div class="frame"><div class="pic"></div><span class="cap">nụ cười</span></div>
-        </div>
-
         <section class="panel">
             <span class="eyebrow">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.6 1.2 4.4 2.6.8-1.4 2.3-2.6 4.4-2.6 3.6 0 5.7 3.8 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg>
@@ -390,12 +441,16 @@
             <form id="login-form" novalidate>
                 <div class="field">
                     <label for="username">Tên đăng nhập</label>
-                    <input type="text" id="username" placeholder="Ví dụ: trinh" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                    <div class="input-wrap">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+                        <input type="text" id="username" placeholder="Ví dụ: trinh" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                    </div>
                 </div>
 
                 <div class="field">
                     <label for="password">Mật khẩu</label>
                     <div class="input-wrap">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
                         <input type="password" id="password" placeholder="Nhập mật khẩu" required>
                         <button type="button" class="toggle-pass" id="togglePass" aria-label="Hiện mật khẩu">Hiện</button>
                     </div>
@@ -404,10 +459,12 @@
                 <div id="error-message" role="alert">Sai tên đăng nhập hoặc mật khẩu. Kiểm tra lại rồi thử lần nữa.</div>
 
                 <button type="submit" class="btn-submit">
-                    Xem ảnh
+                    Mở album
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </button>
             </form>
+
+            <p class="foot-note">lưu giữ từng khoảnh khắc ♡</p>
         </section>
     </main>
 
