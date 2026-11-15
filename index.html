@@ -4,21 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FFF7EC">
     <title>Hệ thống ảnh</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #141B2E;
-            --ink-2: #1C2440;
-            --line: #313B5C;
-            --paper: #F6F3EC;
-            --text: #E9EDF7;
-            --muted: #929DBA;
-            --lamp: #F4C95D;
-            --lamp-deep: #E2B13F;
-            --error: #FF9A8F;
+            --bg: #FFF7EC;
+            --card: #FFFFFF;
+            --text: #3B2F2A;
+            --muted: #8C7B70;
+            --line: #EDE1D1;
+            --coral: #FF7A5C;
+            --coral-ink: #DC4433;
+            --coral-deep: #C23826;
+            --sun: #FFC94A;
+            --sky: #7CC6F2;
+            --mint: #86D9B6;
+            --pink: #FFADC4;
+            --error: #CF3B2B;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,9 +34,11 @@
             font-family: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
             color: var(--text);
             background:
-                radial-gradient(900px 520px at 12% -8%, rgba(244, 201, 93, 0.13), transparent 62%),
-                radial-gradient(700px 500px at 100% 110%, rgba(110, 140, 220, 0.12), transparent 60%),
-                var(--ink);
+                radial-gradient(620px 420px at 8% 4%, rgba(255, 201, 74, 0.35), transparent 65%),
+                radial-gradient(560px 420px at 96% 12%, rgba(255, 173, 196, 0.35), transparent 65%),
+                radial-gradient(700px 520px at 85% 105%, rgba(124, 198, 242, 0.32), transparent 62%),
+                radial-gradient(520px 420px at 0% 100%, rgba(134, 217, 182, 0.32), transparent 62%),
+                var(--bg);
             min-height: 100vh;
             min-height: 100dvh;
             display: grid;
@@ -40,84 +47,144 @@
             overflow-x: hidden;
         }
 
-        /* Lớp hạt nhiễu nhẹ như giấy ảnh */
+        /* Giấy chấm bi nhẹ như trang sổ lưu niệm */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
             pointer-events: none;
-            opacity: 0.07;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            background-image: radial-gradient(rgba(140, 110, 80, 0.16) 1px, transparent 1.2px);
+            background-size: 22px 22px;
+            mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.4) 100%);
+            -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.4) 100%);
+        }
+
+        /* Lấp lánh trang trí */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            width: 22px;
+            height: 22px;
+            animation: twinkle 3.2s ease-in-out infinite;
+        }
+        .sparkle svg { width: 100%; height: 100%; display: block; }
+        .sparkle.s1 { top: 9%;  left: 7%;  color: var(--sun);  }
+        .sparkle.s2 { top: 16%; right: 9%; color: var(--pink); width: 16px; height: 16px; animation-delay: 0.8s; }
+        .sparkle.s3 { bottom: 12%; left: 12%; color: var(--sky); width: 14px; height: 14px; animation-delay: 1.6s; }
+        .sparkle.s4 { bottom: 8%; right: 14%; color: var(--coral); width: 18px; height: 18px; animation-delay: 2.2s; }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(0.8) rotate(0deg); opacity: 0.55; }
+            50%      { transform: scale(1.15) rotate(20deg); opacity: 1; }
         }
 
         .page {
             position: relative;
             width: 100%;
-            max-width: 940px;
+            max-width: 960px;
             display: grid;
             grid-template-columns: 1.05fr 1fr;
             align-items: center;
             gap: 56px;
         }
 
-        /* --- Chồng ảnh trang trí --- */
+        /* --- Chồng ảnh polaroid --- */
         .stack {
             position: relative;
-            height: 420px;
+            height: 440px;
         }
 
         .frame {
             position: absolute;
-            background: var(--paper);
-            padding: 12px 12px 40px;
-            border-radius: 3px;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+            background: #fff;
+            padding: 12px 12px 46px;
+            border-radius: 4px;
+            box-shadow: 0 22px 44px rgba(150, 100, 60, 0.18), 0 2px 6px rgba(150, 100, 60, 0.12);
+            transform: rotate(var(--r));
             animation: settle 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        /* Băng dính washi */
+        .frame::before {
+            content: "";
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            width: 88px;
+            height: 26px;
+            transform: translateX(-50%) rotate(var(--tape-r, -4deg));
+            background: var(--tape);
+            opacity: 0.85;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+            background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0 6px, transparent 6px 12px);
         }
 
         .frame .pic {
             width: 100%;
             height: 100%;
-            border-radius: 1px;
+            border-radius: 2px;
+        }
+
+        .frame .cap {
+            position: absolute;
+            left: 0; right: 0; bottom: 9px;
+            text-align: center;
+            font-family: 'Dancing Script', cursive;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #7A6558;
         }
 
         .frame:nth-child(1) {
-            width: 230px; height: 280px;
-            left: 0; top: 40px;
+            width: 230px; height: 286px;
+            left: 0; top: 52px;
             --r: -9deg;
+            --tape: var(--pink);
             animation-delay: 0.05s;
         }
         .frame:nth-child(1) .pic {
             background:
-                radial-gradient(circle at 70% 30%, #FFE3A3 0 12%, transparent 13%),
-                linear-gradient(180deg, #F7B27A 0%, #E8806B 45%, #5A4A7A 100%);
+                radial-gradient(circle at 68% 34%, #FFF3B0 0 11%, #FFE07A 12%, transparent 13%),
+                linear-gradient(180deg, transparent 72%, #FFB3A1 72%, #FF9C8A 100%),
+                linear-gradient(180deg, #FFE3B8 0%, #FFC0A8 55%, #FFB3C7 100%);
         }
 
+        .frame:nth-child(1) .cap { text-align: left; padding-left: 22px; }
+
         .frame:nth-child(2) {
-            width: 250px; height: 300px;
-            left: 120px; top: 70px;
+            width: 252px; height: 306px;
+            left: 128px; top: 92px;
             --r: 6deg;
+            --tape: var(--sky);
+            --tape-r: 5deg;
             animation-delay: 0.18s;
         }
         .frame:nth-child(2) .pic {
             background:
-                linear-gradient(180deg, transparent 55%, #2F6E7E 55%, #1F4A5C 100%),
-                linear-gradient(180deg, #BFE3F0 0%, #8EC5DD 55%);
+                radial-gradient(circle at 22% 24%, #fff 0 5%, transparent 5.5%),
+                radial-gradient(circle at 28% 22%, #fff 0 6%, transparent 6.5%),
+                linear-gradient(180deg, transparent 74%, #FFE6AE 74%, #FFD98A 100%),
+                linear-gradient(180deg, transparent 52%, #58C3E0 52%, #3AA8CC 74%),
+                linear-gradient(180deg, #CFEFFF 0%, #A6DDFB 52%);
         }
 
         .frame:nth-child(3) {
-            width: 200px; height: 245px;
-            left: 40px; top: 0;
+            width: 204px; height: 252px;
+            left: 46px; top: 0;
             --r: -2deg;
+            --tape: var(--sun);
+            --tape-r: -7deg;
             animation-delay: 0.31s;
         }
         .frame:nth-child(3) .pic {
             background:
-                radial-gradient(ellipse at 50% 120%, #3E6B3A 0 45%, transparent 46%),
-                linear-gradient(180deg, #DDE8D0 0%, #A9C49A 100%);
+                radial-gradient(circle at 24% 78%, #FF8FAE 0 4%, transparent 4.5%),
+                radial-gradient(circle at 52% 84%, #FFC94A 0 4%, transparent 4.5%),
+                radial-gradient(circle at 76% 76%, #FF8FAE 0 4%, transparent 4.5%),
+                radial-gradient(ellipse at 50% 125%, #7CCF7A 0 52%, transparent 53%),
+                linear-gradient(180deg, #E9F8FF 0%, #D6F2E4 100%);
         }
-
-        .frame { transform: rotate(var(--r)); }
 
         @keyframes settle {
             from { opacity: 0; transform: translateY(36px) rotate(calc(var(--r) * 2.2)); }
@@ -125,21 +192,57 @@
         }
 
         /* --- Khối đăng nhập --- */
+        .panel {
+            background: rgba(255, 255, 255, 0.86);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(237, 225, 209, 0.9);
+            border-radius: 26px;
+            padding: 36px 34px 34px;
+            box-shadow: 0 30px 60px rgba(150, 100, 60, 0.14), 0 2px 8px rgba(150, 100, 60, 0.06);
+            animation: rise 0.7s 0.15s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: none; }
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: #9A5B1E;
+            background: #FFF0C7;
+            padding: 6px 12px;
+            border-radius: 999px;
+            margin-bottom: 14px;
+        }
+        .eyebrow svg { width: 14px; height: 14px; color: var(--coral); }
+
         .panel h1 {
-            font-family: 'Playfair Display', Georgia, serif;
+            font-family: 'Dancing Script', cursive;
             font-weight: 700;
-            font-size: clamp(2.6rem, 6vw, 3.6rem);
-            line-height: 1.05;
-            letter-spacing: -0.01em;
+            font-size: clamp(2.9rem, 6.5vw, 3.9rem);
+            line-height: 1;
             color: var(--text);
             margin-bottom: 12px;
+        }
+        .panel h1 .accent {
+            background: linear-gradient(90deg, var(--coral-ink), #E8578A);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .panel .lead {
             color: var(--muted);
             font-size: 1rem;
             line-height: 1.6;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             max-width: 34ch;
         }
 
@@ -148,8 +251,8 @@
         .field label {
             display: block;
             font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--muted);
+            font-weight: 600;
+            color: #6E5D52;
             margin-bottom: 8px;
         }
 
@@ -161,18 +264,21 @@
             font: inherit;
             font-size: 1rem;
             color: var(--text);
-            background: var(--ink-2);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #FFFDF9;
+            border: 1.5px solid var(--line);
+            border-radius: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
         }
 
-        .field input::placeholder { color: #5E6888; }
+        .field input::placeholder { color: #B9A99C; }
+
+        .field input:hover { border-color: #E2D1BC; }
 
         .field input:focus {
             outline: none;
-            border-color: var(--lamp);
-            box-shadow: 0 0 0 3px rgba(244, 201, 93, 0.2);
+            background: #fff;
+            border-color: var(--coral);
+            box-shadow: 0 0 0 4px rgba(255, 122, 92, 0.18);
         }
 
         .toggle-pass {
@@ -180,46 +286,58 @@
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            background: none;
+            background: #FFF1EC;
             border: none;
-            color: var(--muted);
+            color: var(--coral-ink);
             font: inherit;
-            font-size: 0.85rem;
-            font-weight: 500;
-            padding: 6px 10px;
-            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 999px;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .toggle-pass:hover { color: var(--text); }
-        .toggle-pass:focus-visible { outline: 2px solid var(--lamp); }
+        .toggle-pass:hover { background: #FFE3DA; }
+        .toggle-pass:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
 
-        #password { padding-right: 70px; }
+        #password { padding-right: 76px; }
 
         #error-message {
             display: none;
             color: var(--error);
+            background: #FFF0EE;
+            border: 1px solid #FFD3CC;
+            border-radius: 12px;
+            padding: 10px 14px;
             font-size: 0.92rem;
             line-height: 1.5;
-            margin: -4px 0 18px;
+            margin: -2px 0 18px;
         }
 
         .btn-submit {
             width: 100%;
-            margin-top: 8px;
+            margin-top: 6px;
             padding: 15px 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
             font: inherit;
-            font-size: 1.02rem;
-            font-weight: 600;
-            color: #1A1608;
-            background: var(--lamp);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--coral-ink);
             border: none;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
-            transition: background 0.2s, transform 0.15s;
+            box-shadow: 0 10px 22px rgba(220, 68, 51, 0.28);
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
         }
-        .btn-submit:hover { background: var(--lamp-deep); }
+        .btn-submit svg { width: 18px; height: 18px; transition: transform 0.2s; }
+        .btn-submit:hover { background: var(--coral-deep); box-shadow: 0 12px 26px rgba(220, 68, 51, 0.34); }
+        .btn-submit:hover svg { transform: translateX(3px); }
         .btn-submit:active { transform: translateY(1px); }
-        .btn-submit:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+        .btn-submit:focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 
         .shake { animation: shake 0.32s ease; }
         @keyframes shake {
@@ -229,33 +347,45 @@
         }
 
         @media (max-width: 760px) {
-            body { place-items: start center; padding-top: 28px; }
-            .page { grid-template-columns: 1fr; gap: 28px; max-width: 420px; }
-            .stack { height: 210px; }
-            .frame { padding: 7px 7px 22px; }
-            .frame:nth-child(1) { width: 125px; height: 152px; left: 10%; top: 30px; }
-            .frame:nth-child(2) { width: 138px; height: 166px; left: 38%; top: 40px; }
-            .frame:nth-child(3) { width: 110px; height: 134px; left: 20%; top: 0; }
-            .panel { text-align: left; }
+            body { place-items: start center; padding: 24px 16px 32px; }
+            .page { grid-template-columns: 1fr; gap: 22px; max-width: 440px; }
+            .stack { height: 230px; }
+            .frame { padding: 7px 7px 28px; }
+            .frame::before { width: 54px; height: 16px; top: -8px; }
+            .frame .cap { font-size: 0.95rem; bottom: 5px; }
+            .frame:nth-child(1) .cap { padding-left: 14px; }
+            .frame:nth-child(1) { width: 128px; height: 160px; left: 6%;  top: 40px; }
+            .frame:nth-child(2) { width: 140px; height: 172px; left: 44%; top: 48px; }
+            .frame:nth-child(3) { width: 116px; height: 144px; left: 24%; top: 4px; }
+            .panel { padding: 28px 22px 24px; border-radius: 22px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .frame, .shake { animation: none; }
+            .frame, .shake, .panel, .sparkle { animation: none; }
         }
     </style>
 </head>
 
 <body>
+    <span class="sparkle s1" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
+    <span class="sparkle s2" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
+    <span class="sparkle s3" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
+    <span class="sparkle s4" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c.7 6.3 5 10.6 12 12-7 1.4-11.3 5.7-12 12-.7-6.3-5-10.6-12-12 7-1.4 11.3-5.7 12-12z"/></svg></span>
+
     <main class="page">
         <div class="stack" aria-hidden="true">
-            <div class="frame"><div class="pic"></div></div>
-            <div class="frame"><div class="pic"></div></div>
-            <div class="frame"><div class="pic"></div></div>
+            <div class="frame"><div class="pic"></div><span class="cap">mùa hè</span></div>
+            <div class="frame"><div class="pic"></div><span class="cap">biển xanh</span></div>
+            <div class="frame"><div class="pic"></div><span class="cap">nụ cười</span></div>
         </div>
 
         <section class="panel">
-            <h1>Hệ thống ảnh</h1>
-            <p class="lead">Album riêng của nhóm. Đăng nhập để xem và thêm ảnh.</p>
+            <span class="eyebrow">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.3 3 4.5 6.6 4.5c2.1 0 3.6 1.2 4.4 2.6.8-1.4 2.3-2.6 4.4-2.6 3.6 0 5.7 3.8 4.2 7.2C19.5 16.4 12 21 12 21z"/></svg>
+                Góc kí ức của nhóm
+            </span>
+            <h1>Hệ thống <span class="accent">ảnh</span></h1>
+            <p class="lead">Album riêng của nhóm. Đăng nhập để xem lại những khoảnh khắc và thêm ảnh mới.</p>
 
             <form id="login-form" novalidate>
                 <div class="field">
@@ -273,7 +403,10 @@
 
                 <div id="error-message" role="alert">Sai tên đăng nhập hoặc mật khẩu. Kiểm tra lại rồi thử lần nữa.</div>
 
-                <button type="submit" class="btn-submit">Xem ảnh</button>
+                <button type="submit" class="btn-submit">
+                    Xem ảnh
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </button>
             </form>
         </section>
     </main>
