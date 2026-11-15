@@ -196,6 +196,124 @@
         .btn-upload input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
         .btn-upload svg { width: 18px; height: 18px; }
 
+
+        /* --- Trình chiếu tự động --- */
+        .slideshow-group { position: relative; display: grid; grid-template-columns: 1fr 96px; gap: 8px; }
+        .slideshow-group .btn-play { grid-column: 1 / -1; }
+        .slideshow-group .size-select { width: 100%; padding-right: 26px; background-position: right 10px center; }
+
+        .btn-play {
+            flex: 1.25;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font: inherit;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #1E6B4A;
+            background: #E3F7EE;
+            border: 1.5px solid #BDEBD6;
+            border-radius: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s, border-color 0.2s;
+        }
+        .btn-play svg { width: 16px; height: 16px; }
+        .btn-play .ico-pause { display: none; }
+        .btn-play:hover { background: #D2F2E3; }
+        .btn-play.on { color: #fff; background: #23855A; border-color: #23855A; }
+        .btn-play.on .ico-play { display: none; }
+        .btn-play.on .ico-pause { display: block; }
+        .btn-play:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+        /* --- Nhạc nền (trình phát YouTube) --- */
+        .music {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-areas: "player player" "info btn";
+            gap: 8px 10px;
+            align-items: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #FFF3D6, #FFE6EC);
+            border-radius: 16px;
+        }
+        .music-player {
+            grid-area: player;
+            position: relative;
+            aspect-ratio: 16 / 9;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #2B2220;
+        }
+        .music-player iframe, .music-player > div { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .music-info { grid-area: info; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+        .music-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--coral-ink); }
+        .music-title { font-size: 0.85rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .music-btn {
+            grid-area: btn;
+            width: 40px; height: 40px;
+            display: grid; place-items: center;
+            border: none; border-radius: 50%;
+            color: #fff; background: var(--coral-ink);
+            cursor: pointer;
+            box-shadow: 0 6px 14px rgba(220, 68, 51, 0.28);
+            transition: background 0.2s, transform 0.15s;
+        }
+        .music-btn:hover { background: var(--coral-deep); }
+        .music-btn:active { transform: scale(0.95); }
+        .music-btn:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
+        .music-btn svg { width: 18px; height: 18px; }
+        .music-btn .ico-pause { display: none; }
+        .music.playing .music-btn .ico-play { display: none; }
+        .music.playing .music-btn .ico-pause { display: block; }
+        .eq { display: inline-flex; gap: 2px; align-items: flex-end; height: 10px; margin-left: 6px; vertical-align: middle; }
+        .eq i { width: 3px; height: 3px; background: var(--coral-ink); border-radius: 1px; }
+        .music.playing .eq i { animation: eq 0.9s ease-in-out infinite alternate; }
+        .music.playing .eq i:nth-child(2) { animation-delay: 0.3s; }
+        .music.playing .eq i:nth-child(3) { animation-delay: 0.6s; }
+        @keyframes eq { from { height: 3px; } to { height: 10px; } }
+
+        /* --- Thanh tiến trình trình chiếu --- */
+        .slide-progress {
+            position: absolute;
+            left: 24px; right: 24px; bottom: 14px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 5;
+        }
+        .slide-progress span { display: block; height: 100%; width: 0; background: var(--coral); border-radius: 2px; }
+        .slide-progress.run { opacity: 1; }
+        .slide-progress.run span { animation: progress var(--dur, 5s) linear forwards; }
+        @keyframes progress { from { width: 0; } to { width: 100%; } }
+
+        /* --- Hiệu ứng chuyển ảnh --- */
+        .image-wrapper { perspective: 1400px; }
+        .image-wrapper[data-fx="fade"] img.active     { animation: fx-fade 0.9s ease both; }
+        .image-wrapper[data-fx="develop"] img.active  { animation: develop 1s ease both; }
+        .image-wrapper[data-fx="slide"][data-dir="next"] img.active { animation: fx-slide-next 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .image-wrapper[data-fx="slide"][data-dir="prev"] img.active { animation: fx-slide-prev 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .image-wrapper[data-fx="zoom"] img.active     { animation: fx-zoom 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .image-wrapper[data-fx="kenburns"] img.active { animation: fx-fade 1s ease both, fx-kenburns var(--dur, 5s) linear both; }
+        .image-wrapper[data-fx="flip"] img.active     { animation: fx-flip 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+        .image-wrapper[data-fx="drop"] img.active     { animation: fx-drop 0.9s cubic-bezier(0.25, 0.9, 0.3, 1.15) both; }
+        .image-wrapper[data-fx="spin"] img.active     { animation: fx-spin 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+        @keyframes fx-fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fx-slide-next { from { opacity: 0; translate: 22% 0; } to { opacity: 1; translate: 0 0; } }
+        @keyframes fx-slide-prev { from { opacity: 0; translate: -22% 0; } to { opacity: 1; translate: 0 0; } }
+        @keyframes fx-zoom { from { opacity: 0; scale: 0.8; filter: blur(5px); } to { opacity: 1; scale: 1; filter: none; } }
+        @keyframes fx-kenburns { from { scale: 1; } to { scale: 1.07; } }
+        @keyframes fx-flip { from { opacity: 0; rotate: y 75deg; } to { opacity: 1; rotate: y 0deg; } }
+        @keyframes fx-drop { from { opacity: 0; translate: 0 -55%; rotate: 9deg; } 60% { opacity: 1; } to { opacity: 1; translate: 0 0; rotate: 0deg; } }
+        @keyframes fx-spin { from { opacity: 0; scale: 0.5; rotate: -22deg; } to { opacity: 1; scale: 1; rotate: 0deg; } }
+
         /* --- Khung xem ảnh lớn --- */
         .image-viewer {
             grid-area: view;
@@ -379,10 +497,19 @@
             .thumb { flex: 0 0 auto; width: 52px; height: 52px; padding: 2px; border-radius: 12px; }
             .thumb img { border-radius: 8px; }
             #status-container { bottom: 92px; border-radius: 16px; }
+            .topbar { gap: 8px; }
+            .control-group, .slideshow-group { gap: 8px; }
+            .slideshow-group { grid-template-columns: auto minmax(0, 1fr) 84px; }
+            .slideshow-group .btn-play { grid-column: auto; padding-left: 14px; padding-right: 14px; }
+            .size-select, .btn-upload, .btn-play { padding-top: 8px; padding-bottom: 8px; }
+            .music { grid-template-columns: 88px minmax(0, 1fr) auto; grid-template-areas: "player info btn"; padding: 6px 8px 6px 6px; border-radius: 14px; }
+            .music-player { border-radius: 8px; }
+            .music-btn { width: 36px; height: 36px; }
+            .slide-progress { left: 14px; right: 14px; bottom: 8px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .image-wrapper img.active { animation: none; }
+            .image-wrapper img.active, .image-wrapper[data-fx] img.active { animation: fx-fade 0.4s ease both; }
             .filmstrip { scroll-behavior: auto; }
         }
     </style>
@@ -416,13 +543,48 @@
                     <input type="file" id="fileInput" accept="image/*" multiple>
                 </label>
             </div>
+            <div class="slideshow-group">
+                <button type="button" class="btn-play" id="playBtn" aria-pressed="false">
+                    <svg class="ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
+                    <svg class="ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1.2"/><rect x="14" y="4" width="4" height="16" rx="1.2"/></svg>
+                    <span id="playText">Tự chạy</span>
+                </button>
+                <select class="size-select" id="fxSelect" aria-label="Hiệu ứng chuyển ảnh">
+                    <option value="random">Ngẫu nhiên</option>
+                    <option value="fade">Mờ dần</option>
+                    <option value="slide">Trượt</option>
+                    <option value="zoom">Phóng to</option>
+                    <option value="kenburns">Điện ảnh</option>
+                    <option value="flip">Lật ảnh</option>
+                    <option value="drop">Rơi xuống</option>
+                    <option value="spin">Xoay</option>
+                    <option value="develop">Rửa ảnh</option>
+                </select>
+                <select class="size-select" id="speedSelect" aria-label="Thời gian mỗi ảnh">
+                    <option value="3">3 giây</option>
+                    <option value="5" selected>5 giây</option>
+                    <option value="8">8 giây</option>
+                </select>
+            </div>
+            <div class="music" id="musicBox">
+                <div class="music-player"><div id="ytPlayer"></div></div>
+                <div class="music-info">
+                    <span class="music-label">Nhạc nền <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span></span>
+                    <span class="music-title" id="musicTitle">Đang tải nhạc…</span>
+                </div>
+                <button type="button" class="music-btn" id="musicBtn" aria-label="Phát nhạc">
+                    <svg class="ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+                    <svg class="ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1.2"/><rect x="14" y="5" width="4" height="14" rx="1.2"/></svg>
+                </button>
+            </div>
         </header>
 
         <div class="image-viewer" id="swipeArea">
             <button type="button" class="arrow arrow-left" id="prevBtn" aria-label="Ảnh trước">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <div class="image-wrapper" id="imageWrapper"></div>
+            <div class="image-wrapper" id="imageWrapper" data-fx="develop" data-dir="next"></div>
+            <div class="slide-progress" id="slideProgress" aria-hidden="true"><span></span></div>
             <button type="button" class="arrow arrow-right" id="nextBtn" aria-label="Ảnh tiếp theo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
@@ -466,7 +628,14 @@
         function showAntiScreenshot() { overlay.style.display = 'flex'; mainApp.style.filter = 'blur(20px)'; }
         function hideAntiScreenshot() { overlay.style.display = 'none'; mainApp.style.filter = 'none'; }
 
-        window.addEventListener('blur', () => { if (!isChoosingFile) { showAntiScreenshot(); } });
+        window.addEventListener('blur', () => {
+            // Bấm vào trình phát nhạc YouTube (iframe) cũng làm trang mất tiêu điểm: bỏ qua trường hợp này
+            setTimeout(() => {
+                const ae = document.activeElement;
+                if (ae && ae.tagName === 'IFRAME') return;
+                if (!isChoosingFile) showAntiScreenshot();
+            }, 0);
+        });
         window.addEventListener('focus', () => { isChoosingFile = false; hideAntiScreenshot(); });
     </script>
 
@@ -513,9 +682,69 @@
         let currentIndex = 0;
         let images = [];
         let statusTimer = null;
-        const sound = new Audio('nhac.mp3');
+        // --- NHẠC NỀN TỪ YOUTUBE ---
+        const YT_VIDEO_ID = 'h-CNEyZeIPw';
+        const musicBox = document.getElementById('musicBox');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicTitle = document.getElementById('musicTitle');
+        let ytPlayer = null, ytReady = false, wantMusic = false, musicFailed = false, userPausedMusic = false;
 
-        function playSound() { if (sound.paused) sound.play().catch(() => {}); }
+        function setMusicUI(playing) {
+            musicBox.classList.toggle('playing', playing);
+            musicBtn.setAttribute('aria-label', playing ? 'Tạm dừng nhạc' : 'Phát nhạc');
+        }
+
+        window.onYouTubeIframeAPIReady = () => {
+            ytPlayer = new YT.Player('ytPlayer', {
+                videoId: YT_VIDEO_ID,
+                playerVars: { loop: 1, playlist: YT_VIDEO_ID, controls: 0, rel: 0, playsinline: 1, modestbranding: 1, origin: location.origin },
+                events: {
+                    onReady: (e) => {
+                        ytReady = true;
+                        e.target.setVolume(70);
+                        const t = e.target.getVideoData && e.target.getVideoData().title;
+                        musicTitle.textContent = t || 'Nhạc của nhóm';
+                        if (wantMusic) e.target.playVideo();
+                    },
+                    onStateChange: (e) => {
+                        if (e.data === YT.PlayerState.PLAYING) {
+                            setMusicUI(true);
+                            const t = ytPlayer.getVideoData && ytPlayer.getVideoData().title;
+                            if (t) musicTitle.textContent = t;
+                        } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                            setMusicUI(false);
+                        }
+                    },
+                    onError: () => {
+                        musicFailed = true;
+                        setMusicUI(false);
+                        musicTitle.textContent = 'Video này không cho phát trên web khác';
+                    }
+                }
+            });
+        };
+        const ytScript = document.createElement('script');
+        ytScript.src = 'https://www.youtube.com/iframe_api';
+        ytScript.onerror = () => { musicTitle.textContent = 'Không tải được nhạc. Kiểm tra mạng.'; };
+        document.head.appendChild(ytScript);
+
+        function playMusic() {
+            if (musicFailed || userPausedMusic) return;
+            wantMusic = true;
+            if (ytReady && ytPlayer.getPlayerState() !== YT.PlayerState.PLAYING) ytPlayer.playVideo();
+        }
+        musicBtn.addEventListener('click', () => {
+            if (musicFailed) return;
+            if (ytReady && ytPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+                userPausedMusic = true;
+                ytPlayer.pauseVideo();
+            } else {
+                userPausedMusic = false;
+                playMusic();
+            }
+        });
+
+        function playSound() { playMusic(); }
 
         function showStatus(text, color) {
             statusText.innerText = text;
@@ -550,7 +779,7 @@
                     t.loading = 'lazy';
                     t.draggable = false;
                     btn.appendChild(t);
-                    btn.addEventListener('click', () => { currentIndex = i; playSound(); updateGallery(); });
+                    btn.addEventListener('click', () => { navDir = i < currentIndex ? 'prev' : 'next'; currentIndex = i; playSound(); updateGallery(); });
                     filmstrip.appendChild(btn);
                 });
             }
@@ -569,11 +798,43 @@
             }
         }
 
+        // --- HIỆU ỨNG CHUYỂN ẢNH ---
+        const fxSelect = document.getElementById('fxSelect');
+        const speedSelect = document.getElementById('speedSelect');
+        const playBtn = document.getElementById('playBtn');
+        const playText = document.getElementById('playText');
+        const slideProgress = document.getElementById('slideProgress');
+        const FX_LIST = ['fade', 'slide', 'zoom', 'kenburns', 'flip', 'drop', 'spin', 'develop'];
+        let navDir = 'next';
+        let shownIndex = -1;
+        let lastFx = 'develop';
+
+        function pickEffect() {
+            if (fxSelect.value !== 'random') return fxSelect.value;
+            let fx;
+            do { fx = FX_LIST[Math.floor(Math.random() * FX_LIST.length)]; } while (fx === lastFx);
+            return fx;
+        }
+
+        function applySpeed() {
+            const dur = speedSelect.value + 's';
+            gallery.style.setProperty('--dur', dur);
+            slideProgress.style.setProperty('--dur', dur);
+        }
+
         function updateGallery() {
             images = Array.from(gallery.querySelectorAll('img'));
             if (images.length === 0) { counter.innerHTML = 'Chưa có ảnh'; return; }
             if (currentIndex >= images.length) currentIndex = 0;
             counter.innerHTML = `<b>${currentIndex + 1}</b> / ${images.length}`;
+            // Chỉ đổi hiệu ứng khi thật sự sang ảnh khác (tránh ảnh đang xem chạy lại hiệu ứng)
+            if (currentIndex !== shownIndex) {
+                lastFx = pickEffect();
+                gallery.dataset.fx = lastFx;
+                gallery.dataset.dir = navDir;
+                shownIndex = currentIndex;
+                if (slideshowOn) scheduleNext();
+            }
             images.forEach((img, i) => img.classList.toggle('active', i === currentIndex));
             syncFilmstrip();
             changeImageSize();
@@ -585,12 +846,14 @@
 
         function goNext() {
             if (images.length === 0) return;
+            navDir = 'next';
             currentIndex = (currentIndex + 1) % images.length;
             playSound();
             updateGallery();
         }
         function goPrev() {
             if (images.length === 0) return;
+            navDir = 'prev';
             currentIndex = (currentIndex - 1 + images.length) % images.length;
             playSound();
             updateGallery();
@@ -599,11 +862,50 @@
         nextBtn.onclick = goNext;
         prevBtn.onclick = goPrev;
 
-        // Phím mũi tên trái / phải
+        // --- TRÌNH CHIẾU TỰ ĐỘNG ---
+        let slideshowOn = false;
+        let slideTimer = null;
+
+        function restartProgress() {
+            slideProgress.classList.remove('run');
+            void slideProgress.offsetWidth;
+            slideProgress.classList.add('run');
+        }
+        function scheduleNext() {
+            clearTimeout(slideTimer);
+            restartProgress();
+            slideTimer = setTimeout(goNext, speedSelect.value * 1000);
+        }
+        function startSlideshow() {
+            if (images.length < 2) return;
+            slideshowOn = true;
+            playBtn.classList.add('on');
+            playBtn.setAttribute('aria-pressed', 'true');
+            playText.textContent = 'Tạm dừng';
+            playMusic();
+            scheduleNext();
+        }
+        function stopSlideshow() {
+            slideshowOn = false;
+            clearTimeout(slideTimer);
+            slideProgress.classList.remove('run');
+            playBtn.classList.remove('on');
+            playBtn.setAttribute('aria-pressed', 'false');
+            playText.textContent = 'Tự chạy';
+        }
+        playBtn.addEventListener('click', () => slideshowOn ? stopSlideshow() : startSlideshow());
+        speedSelect.addEventListener('change', () => { applySpeed(); if (slideshowOn) scheduleNext(); });
+        applySpeed();
+
+        // Phím mũi tên trái / phải, phím cách để bật / tắt tự chạy
         document.addEventListener('keydown', e => {
             if (e.target.tagName === 'SELECT') return;
             if (e.key === 'ArrowRight') goNext();
             if (e.key === 'ArrowLeft') goPrev();
+            if (e.key === ' ' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+                slideshowOn ? stopSlideshow() : startSlideshow();
+            }
         });
 
         // --- CHỨC NĂNG LƯỚT ẢNH TRÊN MOBILE ---
